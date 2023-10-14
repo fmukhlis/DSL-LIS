@@ -14,9 +14,11 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                motiva: ['Motiva Sans', ...defaultTheme.fontFamily.sans],
             },
         },
     },
+    darkMode: 'class',
 
     plugins: [forms],
 };
