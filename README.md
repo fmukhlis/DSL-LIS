@@ -1,66 +1,77 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<div align="center">
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Hi, I'm Fajar Mukhlis Imananda
 
-## About Laravel
+I'm a student at UIN Syarif Hidayatullah, Jakarta ID. I have passion in coding for both backend and frontend.  
+I also enjoyed learning game development as a hobby.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Now, I'm Currently developing a LIS.
+<br>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## <img src="https://github.com/fmukhlis/fmukhlis/blob/main/assets/Ruby.png" width="20" style="margin-right: .5rem"> About me
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Fullstack Web Developer  
+Coding with Passion  
+Currently learning HL7
 
-## Learning Laravel
+<br>
+	
+## <img src="https://github.com/fmukhlis/fmukhlis/blob/main/assets/SilverCoin.png" width ="20" style="margin-right: .5rem"> Skills
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+**Languages**
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+![PHP](https://img.shields.io/badge/PHP-9D0015?style=for-the-badge&logo=php&logoColor=white)
+![HTML5](https://img.shields.io/badge/HTML5-D0001C?style=for-the-badge&logo=HTML5&logoColor=white)
+![JAVASCRIPT](https://img.shields.io/badge/JAVASCRIPT-9D0015?style=for-the-badge&logo=JAVASCRIPT&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-D0001C?style=for-the-badge&logo=CSS3&logoColor=white)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Frameworks and Libraries**
 
-## Laravel Sponsors
+![LARAVEL](https://img.shields.io/badge/LARAVEL-8F9291?style=for-the-badge&logo=LARAVEL&logoColor=white)
+![TAILWIND CSS](https://img.shields.io/badge/TAILWINDCSS-D9DADA?style=for-the-badge&logo=TAILWINDCSS&logoColor=black)
+![BOOTSTRAP](https://img.shields.io/badge/BOOTSTRAP-8F9291?style=for-the-badge&logo=BOOTSTRAP&logoColor=white)
+![REACT](https://img.shields.io/badge/REACT-D9DADA?style=for-the-badge&logo=REACT&logoColor=black)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+**Softwares and Tools**
 
-### Premium Partners
+![GITHUB](https://img.shields.io/badge/GITHUB-D0001C?style=for-the-badge&logo=github&logoColor=white)
+![GIT](https://img.shields.io/badge/GIT-9D0015?style=for-the-badge&logo=git&logoColor=white)
+![WINDOWS](https://img.shields.io/badge/WIDNOWS-D0001C?style=for-the-badge&logo=WINDOWS&logoColor=white)
+![VISUAL STUDIO CODE](https://img.shields.io/badge/VISUALSTUDIOCODE-9D0015?style=for-the-badge&logo=visual-studio-code&logoColor=white)
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+**Extras**
 
-## Contributing
+![MARKDOWN](https://img.shields.io/badge/MARKDOWN-D9DADA?style=for-the-badge&logo=markdown&logoColor=black)
+![TERMINAL](https://img.shields.io/badge/TERMINAL-8F9291?style=for-the-badge&logo=gnu-bash&logoColor=white)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+<br>
+	
+## <img src="https://github.com/fmukhlis/fmukhlis/blob/main/assets/DigitalCoin.png" width="20" style="margin-right: .5rem"> Github Stats
 
-## Code of Conduct
+<a href="https://github.com/fmukhlis/">
+<img src="https://github-readme-stats.vercel.app/api/top-langs?username=fmukhlis&show_icons=true&locale=en&layout=compact&line_height=20&title_color=7A7ADB&icon_color=2234AE&text_color=D3D3D3&bg_color=0,000000,130F40" width="500"/>
+</a>
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+<br>
 
-## Security Vulnerabilities
+<a href="https://github.com/fmukhlis/">
+<img src="https://github-readme-stats.vercel.app/api?username=fmukhlis&include_all_commits=true&count_private=true&show_icons=true&line_height=20&title_color=7A7ADB&icon_color=2234AE&text_color=D3D3D3&bg_color=0,000000,130F40" width="500"/>	
+</a>
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+<br>
+	
+## Reach Me On :
 
-## License
+<a href="https://www.instagram.com/fajar_mi_official/" target="_blank">
+<img src="https://img.shields.io/badge/INSTAGRAM-%20-BLACK?style=social&logo=INSTAGRAM"/>
+</a>
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+<a href="https://www.facebook.com/fajar.mukhlisimananda.3" target="_blank">
+<img src="https://img.shields.io/badge/FACEBOOK-%20-BLACK?style=social&logo=FACEBOOK"/>
+</a>
+	
+<a href="mailto:cipherporu9@gmail.com" target="_blank">
+<img src="https://img.shields.io/badge/GMAIL-%20-BLACK?style=social&logo=GMAIL"/>
+</a>
+
+</div>
