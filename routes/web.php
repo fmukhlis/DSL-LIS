@@ -18,16 +18,25 @@ use App\Models\User;
 |
 */
 
+
 Route::get('/', function () {
-    return Inertia::render('Auth/OldLogin', [
-        'canResetPassword' => Route::has('password.request'),
-        'mongo' => User::all()
-    ]);
+    return Inertia::render('Home');
 });
+
+// Route::get('/', function () {
+//     return Inertia::render('Auth/OldLogin', [
+//         'canResetPassword' => Route::has('password.request'),
+//         'mongo' => User::all()
+//     ]);
+// });
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/order', function () {
+    return Inertia::render('Order');
+})->middleware(['auth', 'verified'])->name('order');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

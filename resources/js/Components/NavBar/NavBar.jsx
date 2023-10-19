@@ -66,24 +66,30 @@ const NavBar = (props) => {
                 </PrimitivesNavigationMenu.Item>
 
                 <PrimitivesNavigationMenu.Item className='mr-2'>
-                    <NavBarLink href='#'>
-                        <DiscordLogoIcon width={18} height={18} />
-                    </NavBarLink>
+                    <PrimitivesNavigationMenu.Link asChild>
+                        <NavBarLink href={route('dashboard')}>
+                            <DiscordLogoIcon width={18} height={18} />
+                        </NavBarLink>
+                    </PrimitivesNavigationMenu.Link>
                 </PrimitivesNavigationMenu.Item>
                 <PrimitivesNavigationMenu.Item className='mr-2'>
-                    <NavBarLink href='#'>
-                        <DiscordLogoIcon width={18} height={18} />
-                    </NavBarLink>
-                </PrimitivesNavigationMenu.Item>
-                <PrimitivesNavigationMenu.Item className='mr-2'>
-                    <NavBarLink href='#'>
-                        <DiscordLogoIcon width={18} height={18} />
-                    </NavBarLink>
-                </PrimitivesNavigationMenu.Item>
-                <PrimitivesNavigationMenu.Item className='mr-2'>
-                    <NavBarLink href='#'>
-                        <DiscordLogoIcon width={18} height={18} />
-                    </NavBarLink>
+                    <PrimitivesNavigationMenu.Link asChild>
+                        <NavBarLink href={route('dashboard')}>
+                            <DiscordLogoIcon width={18} height={18} />
+                        </NavBarLink>
+                    </PrimitivesNavigationMenu.Link>
+                </PrimitivesNavigationMenu.Item><PrimitivesNavigationMenu.Item className='mr-2'>
+                    <PrimitivesNavigationMenu.Link asChild>
+                        <NavBarLink href={route('dashboard')}>
+                            <DiscordLogoIcon width={18} height={18} />
+                        </NavBarLink>
+                    </PrimitivesNavigationMenu.Link>
+                </PrimitivesNavigationMenu.Item><PrimitivesNavigationMenu.Item className='mr-2'>
+                    <PrimitivesNavigationMenu.Link asChild>
+                        <NavBarLink href={route('dashboard')}>
+                            <DiscordLogoIcon width={18} height={18} />
+                        </NavBarLink>
+                    </PrimitivesNavigationMenu.Link>
                 </PrimitivesNavigationMenu.Item>
 
                 <PrimitivesNavigationMenu.Item className='ml-auto mr-2'>

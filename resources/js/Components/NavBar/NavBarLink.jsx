@@ -1,5 +1,9 @@
+import { forwardRef } from 'react'
+
+// Inertia
+import { Link as InertiaLink } from '@inertiajs/react'
+
 // Radix UI
-import { Link } from '@radix-ui/react-navigation-menu'
 import { DiscordLogoIcon } from "@radix-ui/react-icons"
 
 // React Spring
@@ -8,7 +12,7 @@ import {
     animated,
 } from "@react-spring/web"
 
-const NavBarLink = ({href, className, children, ...props}) => {
+const NavBarLink = forwardRef(({href, className, children, ...props}, forwardedRef) => {
     const [springVal, api] = useSpring(() => ({
         from: {
           transform: `scale(0.5)`,
@@ -22,7 +26,7 @@ const NavBarLink = ({href, className, children, ...props}) => {
         }
     }))
     
-    const AnimatedNavBarLink = animated(Link)
+    const NavBarLink = animated(InertiaLink)
 
     const animateFocus = () => {
         api.start({
@@ -46,7 +50,9 @@ const NavBarLink = ({href, className, children, ...props}) => {
     }
 
     return (
-        <AnimatedNavBarLink
+        <NavBarLink
+            { ...props }
+            ref={forwardedRef}
             style={springVal}
             href={href}
             onMouseEnter={animateFocus}
@@ -56,9 +62,9 @@ const NavBarLink = ({href, className, children, ...props}) => {
             onClick={animateActive}
             className={`px-4 py-2 rounded flex shadow outline-none border-b-2 ${className}`}
         >
-            <DiscordLogoIcon width={18} height={18} />
-        </AnimatedNavBarLink>
+            {children}
+        </NavBarLink>
     )
-}
+})
 
 export default NavBarLink
