@@ -67,7 +67,7 @@ const NavBar = (props) => {
 
                 <PrimitivesNavigationMenu.Item className='mr-2'>
                     <PrimitivesNavigationMenu.Link asChild>
-                        <NavBarLink href={route('dashboard')}>
+                        <NavBarLink href={route('order')}>
                             <DiscordLogoIcon width={18} height={18} />
                         </NavBarLink>
                     </PrimitivesNavigationMenu.Link>

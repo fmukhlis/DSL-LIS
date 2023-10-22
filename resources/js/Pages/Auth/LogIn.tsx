@@ -103,7 +103,11 @@ export default function LogIn({ canResetPassword, mongo }) {
                 </div>
 
                 <div className='flex'>
-                    <PrimaryButton className="w-full justify-center mt-4" isDisabled={processing}>
+                    <PrimaryButton 
+                        className="w-full justify-center mt-4 p-2.5" 
+                        isDisabled={processing}
+                        type='submit'
+                    >
                         Log In
                     </PrimaryButton>
                 </div>
