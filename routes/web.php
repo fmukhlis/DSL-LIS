@@ -35,7 +35,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/test-order', function () {
-    return Inertia::render('TestOrder');
+    return Inertia::render('TestOrder/TestOrder');
 })->middleware(['auth', 'verified'])->name('order');
 
 Route::middleware('auth')->group(function () {

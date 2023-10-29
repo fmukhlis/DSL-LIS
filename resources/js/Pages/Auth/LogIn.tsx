@@ -1,5 +1,5 @@
 import { Link, Head, useForm } from '@inertiajs/react';
-import TextInput from '@/Components/TextInput';
+import TextInput from '@/Components/Input';
 import GuestLayout from '@/Layouts/GuestLayout';
 import Checkbox from '@/Components/Checkbox';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -105,7 +105,7 @@ export default function LogIn({ canResetPassword, mongo }) {
                 <div className='flex'>
                     <PrimaryButton 
                         className="w-full justify-center mt-4 p-2.5" 
-                        isDisabled={processing}
+                        disabled={processing}
                         type='submit'
                     >
                         Log In
