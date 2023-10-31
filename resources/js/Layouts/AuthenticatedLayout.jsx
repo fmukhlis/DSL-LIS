@@ -1,17 +1,277 @@
-import { useState } from 'react';
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link } from '@inertiajs/react';
-import NavBar from '@/Components/NavBar/NavBar';
+import { useState } from 'react'
+
+// Internal
+import ApplicationLogo from '@/Components/ApplicationLogo'
+import {
+    NavMenu,
+    NavItem,
+    NavLink,
+} from '@/Components/NavMenu'
+import {
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+} from '@/Components/DropdownMenu'
+
+// Inertia 
+import { usePage } from '@inertiajs/react'
+
+// Radix UI
+import { BellIcon, DiscordLogoIcon, GearIcon, GlobeIcon, InfoCircledIcon, MixerHorizontalIcon, MixerVerticalIcon } from '@radix-ui/react-icons'
 
 export default function Authenticated({ user, header, children }) {
-    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+
+    const { url } = usePage()
 
     return (
         <div>
-            <NavBar/>
+            <NavMenu orientation='horizontal'>
+                <NavItem className='mr-3'>
+                    <NavLink href='#'>
+                        <ApplicationLogo className='w-9 fill-current text-teal-200' />
+                    </NavLink>
+                </NavItem>
+
+                <NavItem className='mr-auto'>
+                    <NavLink 
+                        type='dropdown'
+                        dropdownTrigger={{ title: <>Settings</> }}
+                    >
+                        <DropdownMenuItem
+                            className={`
+                                rounded-sm flex items-center px-2 py-0.5 relative select-none outline-none
+                                text-teal-50
+                                hover:bg-teal-500
+                                data-[highlighted]:bg-teal-500
+                                data-[disabled]:text-teal-400 data-[disabled]:pointer-events-none 
+                            `}
+                        >
+                            Item A
+                            <MixerHorizontalIcon className='ml-auto' />
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            className={`
+                                rounded-sm flex items-center px-2 py-0.5 relative select-none outline-none
+                                text-teal-50
+                                hover:bg-teal-500
+                                data-[highlighted]:bg-teal-500
+                                data-[disabled]:text-teal-400 data-[disabled]:pointer-events-none 
+                            `}
+                        >
+                            Item B
+                            <GlobeIcon className='ml-auto'/>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator className="h-[1px] bg-teal-300 m-1.5" />
+                        <DropdownMenuItem
+                            className={`
+                                rounded-sm flex items-center px-2 py-0.5 relative select-none outline-none
+                                text-teal-50
+                                hover:bg-teal-500
+                                data-[highlighted]:bg-teal-500
+                                data-[disabled]:text-teal-400 data-[disabled]:pointer-events-none 
+                            `}
+                        >
+                            Item C
+                            <GearIcon className='ml-auto'/>
+                        </DropdownMenuItem>
+                    </NavLink>
+                </NavItem>
+
+                <NavItem>
+                    <NavLink 
+                        href={ url === '/dashboard' ? `#` : route('dashboard') }
+                        active={url.startsWith('/dashboard') ? true : false}
+                        className={`
+                            px-4 py-2 rounded shadow outline-none border-teal-200 duration-150
+                            bg-teal-400 border-b-2 scale-100
+                            hover:bg-teal-300 hover:scale-105
+                            focus:bg-teal-300 focus:scale-105
+                            active:bg-teal-600 active:scale-100 active:border-teal-400
+                            data-[active]:bg-teal-600 data-[active]:scale-100 data-[active]:border-b-0
+                        `}
+                    >
+                        <DiscordLogoIcon width={18} height={18} />
+                    </NavLink>
+                </NavItem>
+
+                <NavItem>
+                    <NavLink 
+                        href='#'
+                        className={`
+                            px-4 py-2 rounded flex shadow outline-none border-teal-200 duration-150
+                            bg-teal-400 border-b-2 scale-100
+                            hover:bg-teal-300 hover:scale-105
+                            focus:bg-teal-300 focus:scale-105
+                            active:bg-teal-600 active:scale-100 active:border-teal-400
+                            data-[active]:bg-teal-600 data-[active]:scale-100 data-[active]:border-b-0
+                        `}
+                    >
+                        <DiscordLogoIcon width={18} height={18} />
+                    </NavLink>
+                </NavItem>
+
+                <NavItem>
+                    <NavLink 
+                        href='#'
+                        className={`
+                            px-4 py-2 rounded flex shadow outline-none border-teal-200 duration-150
+                            bg-teal-400 border-b-2 scale-100
+                            hover:bg-teal-300 hover:scale-105
+                            focus:bg-teal-300 focus:scale-105
+                            active:bg-teal-600 active:scale-100 active:border-teal-400
+                            data-[active]:bg-teal-600 data-[active]:scale-100 data-[active]:border-b-0
+                        `}
+                    >
+                        <DiscordLogoIcon width={18} height={18} />
+                    </NavLink>
+                </NavItem>
+
+                <NavItem>
+                    <NavLink 
+                        href='#'
+                        className={`
+                            px-4 py-2 rounded flex shadow outline-none border-teal-200 duration-150
+                            bg-teal-400 border-b-2 scale-100
+                            hover:bg-teal-300 hover:scale-105
+                            focus:bg-teal-300 focus:scale-105
+                            active:bg-teal-600 active:scale-100 active:border-teal-400
+                            data-[active]:bg-teal-600 data-[active]:scale-100 data-[active]:border-b-0
+                        `}
+                    >
+                        <DiscordLogoIcon width={18} height={18} />
+                    </NavLink>
+                </NavItem>
+
+                <NavItem className='ml-auto'>
+                    <NavLink
+                        minWidth='500px'
+                        type='dropdown'
+                        dropdownTrigger={{ title: <BellIcon width={24} height={24} />, withIcon: false }}
+                    >
+                        <DropdownMenuItem
+                            className={`
+                                rounded-sm flex flex-col text-sm px-2 py-1.5 relative select-none outline-none duration-150
+                                text-teal-50
+                                hover:bg-teal-500
+                                data-[highlighted]:bg-teal-500
+                                data-[disabled]:text-teal-400 data-[disabled]:pointer-events-none 
+                                data-[hasBeenRead]:text-teal-300
+                            `}
+                        >
+                            <div className='flex items-center justify-between font-bold'>
+                                <div className='flex items-center text-base'>
+                                    <InfoCircledIcon className='mr-1'/>
+                                    An order request has been submitted.
+                                </div>
+                                <div className='text-xs'>161020230001</div>
+                            </div>
+                            <div className="flex justify-between">
+                                <div>
+                                    <div className='mt-1'>Patient: <span className='font-bold'>Muhammad Novani Fajar</span></div>
+                                    <div>Referring Physician: <span className='font-bold'>Muhammad Novani Fajar</span></div>
+                                </div>
+                            </div>
+                            <div className='flex justify-between mt-1'>
+                                <div><span className='font-bold'>Test 1</span>, <span className='font-bold'>Test 2</span>, and <span className='font-bold'>Test 3</span>.</div>
+                                <div className='font-bold'>about 4 minutes ago</div>
+                            </div>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            className={`
+                                rounded-sm flex flex-col text-sm px-2 py-1.5 relative select-none outline-none duration-150
+                                text-teal-50
+                                hover:bg-teal-500
+                                data-[highlighted]:bg-teal-500
+                                data-[disabled]:text-teal-400 data-[disabled]:pointer-events-none 
+                                data-[hasBeenRead]:text-teal-300
+                            `}
+                        >
+                            <div className='flex items-center justify-between font-bold'>
+                                <div className='flex items-center text-base'>
+                                    <InfoCircledIcon className='mr-1'/>
+                                    An order request has been submitted.
+                                </div>
+                                <div className='text-xs'>161020230001</div>
+                            </div>
+                            <div className="flex justify-between">
+                                <div>
+                                    <div className='mt-1'>Patient: <span className='font-bold'>Muhammad Novani Fajar</span></div>
+                                    <div>Referring Physician: <span className='font-bold'>Muhammad Novani Fajar</span></div>
+                                </div>
+                            </div>
+                            <div className='flex justify-between mt-1'>
+                                <div><span className='font-bold'>Test 1</span>, <span className='font-bold'>Test 2</span>, and <span className='font-bold'>Test 3</span>.</div>
+                                <div className='font-bold'>about 4 minutes ago</div>
+                            </div>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            className={`
+                                rounded-sm flex flex-col text-sm px-2 py-1.5 relative select-none outline-none duration-150
+                                text-teal-50
+                                hover:bg-teal-500
+                                data-[highlighted]:bg-teal-500
+                                data-[disabled]:text-teal-400 data-[disabled]:pointer-events-none 
+                                data-[hasBeenRead]:text-teal-300
+                            `}
+                        >
+                            <div className='flex items-center justify-between font-bold'>
+                                <div className='flex items-center text-base'>
+                                    <InfoCircledIcon className='mr-1'/>
+                                    An order request has been submitted.
+                                </div>
+                                <div className='text-xs'>161020230001</div>
+                            </div>
+                            <div className="flex justify-between">
+                                <div>
+                                    <div className='mt-1'>Patient: <span className='font-bold'>Muhammad Novani Fajar</span></div>
+                                    <div>Referring Physician: <span className='font-bold'>Muhammad Novani Fajar</span></div>
+                                </div>
+                            </div>
+                            <div className='flex justify-between mt-1'>
+                                <div><span className='font-bold'>Test 1</span>, <span className='font-bold'>Test 2</span>, and <span className='font-bold'>Test 3</span>.</div>
+                                <div className='font-bold'>about 4 minutes ago</div>
+                            </div>
+                        </DropdownMenuItem>
+                    </NavLink>
+                </NavItem>
+
+                <NavItem>
+                    <NavLink
+                        minWidth='350px'
+                        type='dropdown'
+                        dropdownTrigger={{ title: <>Analyst</> }}
+                    >
+                        <DropdownMenuLabel
+                            className={`
+                                flex px-2 items-center py-1 mb-1 text-teal-50 text-base justify-between
+                            `}
+                        >
+                            <div className='font-bold mr-1'>Fajar Mukhlis Imananda</div>
+                            <div>(Analyst)</div>
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator className="h-[1px] bg-teal-300 my-1.5" />
+                        <DropdownMenuItem
+                            asChild
+                        >
+                            
+                            <NavLink 
+                                method='post'
+                                as='button'
+                                href={route('logout')}
+                                className={`
+                                    flex py-1.5 px-2 outline-none rounded-sm duration-100 select-none font-bold text-center w-full
+                                    bg-teal-800 text-teal-50
+                                    hover:bg-teal-500
+                                    data-[highlighted]:bg-teal-500
+                                `}
+                            >Log Out</NavLink>
+                        </DropdownMenuItem>
+                    </NavLink>
+                </NavItem>
+            </NavMenu>
+
+
+            {/* <NavBar/> */}
             {children}
         </div>
         // <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
