@@ -1,3 +1,8 @@
+import { 
+    ReactElement, 
+    ComponentPropsWithoutRef, 
+} from "react"
+
 // TanStack Table
 import { 
     ColumnDef, 
@@ -6,6 +11,13 @@ import {
 
 // Inertia
 import { InertiaLinkProps } from "@inertiajs/react"
+
+// Radix UI
+import { 
+    DropdownMenuContentProps as DMContentProps, 
+    DropdownMenuTriggerProps as DMTriggerProps,
+} from "@radix-ui/react-dropdown-menu"
+import { TransitionFn } from "@react-spring/web"
 
 export interface TestOrderProps {
     registrationID: string
@@ -26,4 +38,19 @@ export interface DataTableProps<TData> {
 export interface AnchorProps extends InertiaLinkProps {
     children: React.ReactNode
     className?: string
+}
+
+export interface AuthenticatedLayoutProps extends ComponentPropsWithoutRef<'button'> {
+    user?: string;
+    header?: string; 
+}
+
+export interface DropdownMenuContentProps extends DMContentProps {
+    transition: TransitionFn<boolean>
+    minWidth: string
+}
+
+export interface NavigationMenuDropdownProps extends DMTriggerProps {
+    trigger: { title: JSX.Element, withIcon: boolean }
+    minWidth: string
 }

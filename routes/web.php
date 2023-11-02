@@ -34,9 +34,21 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/test-order', function () {
-    return Inertia::render('TestOrder/TestOrder');
-})->middleware(['auth', 'verified'])->name('order');
+Route::get('/order-test', function () {
+    return Inertia::render('OrderTest/OrderTest');
+})->middleware(['auth', 'verified'])->name('ordertest');
+
+Route::get('/input-result', function () {
+    return Inertia::render('InputResult/InputResult');
+})->middleware(['auth', 'verified'])->name('inputresult');
+
+Route::get('/validate-result', function () {
+    return Inertia::render('ValidateResult/ValidateResult');
+})->middleware(['auth', 'verified'])->name('validateresult');
+
+Route::get('/test-result', function () {
+    return Inertia::render('TestResult/TestResult');
+})->middleware(['auth', 'verified'])->name('testresult');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
