@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker'
 import { TestOrderProps } from '@/Types'
 
-export function generateData(count: number) : TestOrderProps[] {
-    return range(count).map(() : TestOrderProps => {
+export function generateOrderData(count: number): TestOrderProps[] {
+    return range(count).map((): TestOrderProps => {
         return {
             ...newTestOrder()
         }
@@ -12,16 +12,16 @@ export function generateData(count: number) : TestOrderProps[] {
 const range = (count: number) => {
     const arr = []
     for (let i = 0; i < count; i++) {
-      arr.push(i)
+        arr.push(i)
     }
     return arr
 }
-  
-const testOrdered = (count: number) : string[] => {
-    const testOrdered : string[] = ['Hematology']
+
+const testOrdered = (count: number): string[] => {
+    const testOrdered: string[] = ['Hematology']
 
     for (let i = 0; i < count; i++) {
-        const testName : string = faker.science.chemicalElement().name
+        const testName: string = faker.science.chemicalElement().name
         if (!testOrdered.includes(testName)) {
             testOrdered.push(testName)
         }
@@ -30,7 +30,7 @@ const testOrdered = (count: number) : string[] => {
     return testOrdered
 }
 
-const newTestOrder = () : TestOrderProps => {
+const newTestOrder = (): TestOrderProps => {
     return ({
         registrationID: faker.string.numeric(11),
         patient: `${faker.person.firstName()} ${faker.person.lastName()}`,

@@ -1,31 +1,35 @@
-import React, { 
+import React, {
     useEffect,
-    useState, 
+    useState,
 } from 'react'
 
 // Internal
-import { 
-    DataTableProps, 
+import Input from '@/Components/Input'
+import PrimaryButton from '@/Components/PrimaryButton'
+import {
+    DataTableProps,
     TestOrderProps,
 } from "@/Types"
-import { Select, SelectItem } from '@/Components/Select'
-import Input from '@/Components/Input'
+import {
+    Select,
+    SelectItem
+} from '@/Components/Select'
 
 // Radix UI
 import * as PrimitivesToggleGroup from '@radix-ui/react-toggle-group'
 import * as PrimitivesSeparator from '@radix-ui/react-separator'
-import { 
-    ArrowRightIcon, 
-    CaretSortIcon, 
-    CheckIcon, 
-    ThickArrowLeftIcon, 
-    ThickArrowRightIcon 
+import {
+    ArrowRightIcon,
+    CaretSortIcon,
+    CheckIcon,
+    ThickArrowLeftIcon,
+    ThickArrowRightIcon
 } from '@radix-ui/react-icons'
 
 // TanStack Table
-import { 
+import {
     flexRender,
-    SortingState, 
+    SortingState,
     useReactTable,
     getCoreRowModel,
     getSortedRowModel,
@@ -35,16 +39,14 @@ import {
     getPaginationRowModel,
     FilterFn,
 } from "@tanstack/react-table"
-import PrimaryButton from '@/Components/PrimaryButton'
-import { start } from 'repl'
 
 export default function DataTable({
     data,
     columns,
     getRowCanExpand,
     renderSubComponent,
-} : DataTableProps<TestOrderProps>) {
-    
+}: DataTableProps<TestOrderProps>) {
+
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [globalFilter, setGlobalFilter] = React.useState('')
@@ -84,24 +86,24 @@ export default function DataTable({
     return (
         <div>
             <div className='flex items-center p-2 bg-teal-200 rounded h-12 overflow-x-auto'>
-                <Input 
+                <Input
                     placeholder='Search data...'
-                    className='py-1 border-teal-800 bg-teal-50 text-teal-700' 
+                    className='py-1 border-teal-800 bg-teal-50 text-teal-700 form-input'
                     value={globalFilter ?? ''}
                     onChange={e => {
                         setGlobalFilter(e.target.value)
                     }}
                 />
-                
-                <PrimitivesSeparator.Root 
-                    decorative 
+
+                <PrimitivesSeparator.Root
+                    decorative
                     orientation='vertical'
                     className='bg-teal-500 w-px h-full mx-2'
                 />
 
-                <Input 
+                <Input
                     type='date'
-                    className='py-1 border-teal-800 bg-teal-50 text-teal-700 w-[9.5rem]' 
+                    className='py-1 border-teal-800 bg-teal-50 text-teal-700 w-[9.5rem] form-input'
                     value={dateParam.startDate ?? ''}
                     onChange={e => {
                         setDateParam(fo => ({
@@ -110,10 +112,10 @@ export default function DataTable({
                         }))
                     }}
                 />
-                <ArrowRightIcon className='mx-1 text-teal-600'/>
-                <Input 
+                <ArrowRightIcon className='mx-1 text-teal-600' />
+                <Input
                     type='date'
-                    className='py-1 border-teal-800 bg-teal-50 text-teal-700 w-[9.5rem]' 
+                    className='py-1 border-teal-800 bg-teal-50 text-teal-700 w-[9.5rem] form-input'
                     value={dateParam.endDate ?? ''}
                     onChange={e => {
                         setDateParam(fo => ({
@@ -128,16 +130,16 @@ export default function DataTable({
                         table.getColumn('dateTime')?.setFilterValue(dateParam)
                     }}
                 >
-                    <CheckIcon/>
+                    <CheckIcon />
                 </PrimaryButton>
-                
-                <PrimitivesSeparator.Root 
-                    decorative 
+
+                <PrimitivesSeparator.Root
+                    decorative
                     orientation='vertical'
                     className='bg-teal-500 w-px h-full mx-2'
                 />
 
-                <PrimitivesToggleGroup.Root 
+                <PrimitivesToggleGroup.Root
                     type='multiple'
                     value={table.getColumn('payment')?.getFilterValue() as string[] ?? []}
                     aria-label='Payment method'
@@ -146,7 +148,7 @@ export default function DataTable({
                     }}
                     className='flex items-center rounded gap-1'
                 >
-                    <PrimitivesToggleGroup.Item 
+                    <PrimitivesToggleGroup.Item
                         value='BPJS'
                         className={`
                             bg-teal-50 text-teal-700 text-sm px-5 py-1 rounded-sm border border-teal-700
@@ -156,7 +158,7 @@ export default function DataTable({
                     >
                         BPJS
                     </PrimitivesToggleGroup.Item>
-                    <PrimitivesToggleGroup.Item 
+                    <PrimitivesToggleGroup.Item
                         value='Self-Payment'
                         className={`
                             bg-teal-50 text-teal-700 text-sm px-5 py-1 rounded-sm border border-teal-700
@@ -166,7 +168,7 @@ export default function DataTable({
                     >
                         Self-Payment
                     </PrimitivesToggleGroup.Item>
-                    <PrimitivesToggleGroup.Item 
+                    <PrimitivesToggleGroup.Item
                         value='Insurance'
                         className={`
                             bg-teal-50 text-teal-700 text-sm px-5 py-1 rounded-sm border border-teal-700
@@ -178,8 +180,8 @@ export default function DataTable({
                     </PrimitivesToggleGroup.Item>
                 </PrimitivesToggleGroup.Root>
 
-                <PrimitivesSeparator.Root 
-                    decorative 
+                <PrimitivesSeparator.Root
+                    decorative
                     orientation='vertical'
                     className='bg-teal-500 w-px h-full mx-2'
                 />
@@ -189,20 +191,20 @@ export default function DataTable({
                         table.getColumn('dateTime')?.toggleSorting(table.getColumn('dateTime')?.getIsSorted() === 'asc')
                     }}
                 >
-                    <CaretSortIcon width={18} height={18}/>
+                    <CaretSortIcon width={18} height={18} />
                 </PrimaryButton>
 
-                <PrimitivesSeparator.Root 
-                    decorative 
+                <PrimitivesSeparator.Root
+                    decorative
                     orientation='vertical'
                     className='bg-teal-500 w-px h-full mx-2'
                 />
 
-                <Select 
+                <Select
                     value={rowCount}
-                    triggerProps={{ 
+                    triggerProps={{
                         className: 'px-2 py-1 w-28 ml-auto'
-                     }}
+                    }}
                     onValueChange={value => {
                         setRowCount(value)
                     }}
@@ -223,23 +225,25 @@ export default function DataTable({
                                 <tr key={headerGroup.id}>
                                     {headerGroup.headers.map(header => {
                                         return (
-                                            <th 
-                                                key={header.id} 
-                                                colSpan={header.colSpan} 
+                                            <th
+                                                key={header.id}
+                                                colSpan={header.colSpan}
                                                 className={`text-start px-3.5 py-2 sticky top-0 bg-teal-600 ${header.id === 'more' && 'w-5'}`}
                                             >
                                                 {header.isPlaceholder
                                                     ? null
                                                     : flexRender(
-                                                        header.column.columnDef.header, 
+                                                        header.column.columnDef.header,
                                                         header.getContext()
                                                     )
                                                 }
                                             </th>
-                                        )}
+                                        )
+                                    }
                                     )}
                                 </tr>
-                            )}
+                            )
+                        }
                         )}
                     </thead>
                     <tbody>
@@ -250,7 +254,7 @@ export default function DataTable({
                                         {row.getVisibleCells().map(cell => (
                                             <td key={cell.id} className="px-3.5 py-1.5">
                                                 {flexRender(
-                                                    cell.column.columnDef.cell, 
+                                                    cell.column.columnDef.cell,
                                                     cell.getContext()
                                                 )}
                                             </td>
@@ -258,21 +262,22 @@ export default function DataTable({
                                     </tr>
                                     {row.getIsExpanded() &&
                                         <tr className='border-b border-teal-300 bg-teal-50'>
-                                            <td colSpan={row.getVisibleCells().length} className="px-3.5 py-1.5">                              
-                                                {renderSubComponent({row})}    
+                                            <td colSpan={row.getVisibleCells().length} className="px-3.5 py-1.5">
+                                                {renderSubComponent({ row })}
                                             </td>
                                         </tr>
                                     }
                                 </React.Fragment>
-                            )}
+                            )
+                        }
                         )}
                     </tbody>
                 </table>
             </div>
-            
+
             <div className='flex items-center mt-2'>
                 <div className='mr-auto text-sm text-gray-400'>
-                    Page 
+                    Page
                     <span className='font-bold mx-1'>{table.getState().pagination.pageIndex + 1}</span>
                     of
                     <span className='font-bold mx-1'>{table.getPageCount()}</span>
@@ -297,11 +302,11 @@ export default function DataTable({
     )
 }
 
-const filterByDate : FilterFn<any> = (row, column, value, addMeta) => {
-    let startDate : Date | null = new Date(value.startDate)
-    let endDate : Date | null = new Date(value.endDate)
-    const cellValue : Date = new Date(row.getValue(column))
-    
+const filterByDate: FilterFn<any> = (row, column, value, addMeta) => {
+    let startDate: Date | null = new Date(value.startDate)
+    let endDate: Date | null = new Date(value.endDate)
+    const cellValue: Date = new Date(row.getValue(column))
+
     if (isNaN(startDate.getTime())) {
         startDate = null
     }
@@ -310,19 +315,19 @@ const filterByDate : FilterFn<any> = (row, column, value, addMeta) => {
         endDate = null
     }
 
-    if (startDate && endDate && (startDate.getTime() === endDate.getTime())){
+    if (startDate && endDate && (startDate.getTime() === endDate.getTime())) {
         cellValue.setHours(0, 0, 0, 0)
         startDate.setHours(0, 0, 0, 0)
     }
-    
+
     return (
-        startDate 
-            ? endDate 
+        startDate
+            ? endDate
                 ? startDate.getTime() === endDate.getTime()
                     ? cellValue.getTime() === startDate.getTime()
                     : (cellValue >= startDate) && (cellValue <= endDate)
                 : (cellValue >= startDate)
-            : endDate 
+            : endDate
                 ? (cellValue <= endDate)
                 : true
     )

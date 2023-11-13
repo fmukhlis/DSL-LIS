@@ -1,34 +1,34 @@
-import { 
-    useRef, 
-    useEffect, 
-    forwardRef, 
-    ComponentPropsWithRef,
+import {
+    useRef,
+    useEffect,
+    forwardRef,
 } from "react"
 
-export interface InputProps extends ComponentPropsWithRef<'input'> {
-    isFocused? : boolean
-}
+// Internal
+import { InputProps } from "@/Types"
 
-const Input = forwardRef<HTMLInputElement, InputProps>(({isFocused = false, ...props}, forwardedRef) => {
-    const input = forwardedRef ? forwardedRef : useRef<HTMLInputElement>(null)
+const Input = forwardRef<HTMLInputElement, InputProps>(
+    ({ isFocused = false, className, ...props }, forwardedRef) => {
+        const input = forwardedRef ? forwardedRef : useRef<HTMLInputElement>(null)
 
-    useEffect(() => {
-        if (isFocused) {
-            (input as React.MutableRefObject<HTMLInputElement>).current.focus()
-        }
-    }, []);
+        useEffect(() => {
+            if (isFocused) {
+                (input as React.MutableRefObject<HTMLInputElement>).current.focus()
+            }
+        }, []);
 
-    return (
-        <input 
-            {...props}
-            ref={input}
-            className={`
-                border-gray-300 rounded-sm shadow-sm text-sm
+        return (
+            <input
+                {...props}
+                ref={input}
+                className={`
+                border-gray-300 rounded-sm shadow-sm text-sm form-input
                 focus:text-black focus:border-teal-600 focus:ring-teal-500 focus:ring-2 focus:ring-offset-2
-                ${props.className}
-            `} 
-        />
-    )
-})
+                ${className}
+            `}
+            />
+        )
+    }
+)
 
 export default Input

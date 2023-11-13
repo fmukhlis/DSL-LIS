@@ -28,12 +28,12 @@ import {
     MixerHorizontalIcon,
 } from '@radix-ui/react-icons'
 
-export default function AuthenticatedLayout({ user, header, children }: AuthenticatedLayoutProps) {
+export default function AuthenticatedLayout({ user, header, children, className }: AuthenticatedLayoutProps) {
 
     const { url } = usePage()
 
     return (
-        <div>
+        <div className={className}>
             <NavigationMenu>
                 <NavigationMenuList>
                     <NavigationMenuItem>
@@ -51,6 +51,7 @@ export default function AuthenticatedLayout({ user, header, children }: Authenti
                                 trigger={{ title: <>Settings</>, withIcon: true }}
                             >
                                 <DropdownMenuItem
+                                    asChild
                                     className={`
                                             rounded-sm flex items-center px-2 py-0.5 relative select-none outline-none
                                             text-teal-50
@@ -59,8 +60,10 @@ export default function AuthenticatedLayout({ user, header, children }: Authenti
                                             data-[disabled]:text-teal-400 data-[disabled]:pointer-events-none 
                                         `}
                                 >
-                                    Item A
-                                    <MixerHorizontalIcon className='ml-auto' />
+                                    <Link href={route('master.data')}>
+                                        Master Data...
+                                        <MixerHorizontalIcon className='ml-auto' />
+                                    </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                     className={`

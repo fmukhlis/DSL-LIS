@@ -1,11 +1,15 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+// Inertia JS
+import {
+    Head,
+} from '@inertiajs/react'
 
-export default function Home() {
+// Internal
+
+export default function Home({ categories }: { categories: Record<string, unknown>[] }) {
+
     return (
         <>
             <Head title="Home" />
-            <h1>Home Page</h1>
         </>
     );
 }

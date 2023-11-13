@@ -1,24 +1,26 @@
-import { ComponentPropsWithoutRef } from "react";
+import {
+    forwardRef,
+    ComponentPropsWithRef,
+} from "react";
 
-export default function SecondaryButton({
-    children, 
-    className = '',
-    ...props 
-} : ComponentPropsWithoutRef<'button'>) {
-    return (
-        <button
-            {...props}
-            className={
-                `inline-flex items-center justify-center
-                bg-teal-50 text-teal-500 border-teal-500
-                hover:bg-teal-400 focus:bg-teal-400 active:bg-teal-600 focus:text-white hover:text-white
-                focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 disabled:opacity-25
-                border-2 rounded-sm transition ease-in-out duration-150
-                font-semibold uppercase tracking-widest text-xs
-                ${className}`
-            }
-        >
-            {children}
-        </button>
-    );
-}
+export default forwardRef<HTMLButtonElement, ComponentPropsWithRef<'button'>>(
+    ({ children, className = '', ...props }, forwardedRef) => {
+        return (
+            <button
+                {...props}
+                ref={forwardedRef}
+                className={
+                    `inline-flex items-center justify-center
+                    bg-teal-50 text-teal-500 border-teal-500
+                    hover:bg-teal-400 focus:bg-teal-400 active:bg-teal-600 focus:text-white hover:text-white
+                    focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 disabled:opacity-25
+                    border-2 rounded-sm transition ease-in-out duration-150
+                    font-semibold uppercase tracking-widest text-xs
+                    ${className}`
+                }
+            >
+                {children}
+            </button>
+        )
+    }
+)

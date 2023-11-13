@@ -1,5 +1,6 @@
 import { 
     ReactElement, 
+    ComponentPropsWithRef,
     ComponentPropsWithoutRef, 
 } from "react"
 
@@ -18,6 +19,10 @@ import {
     DropdownMenuTriggerProps as DMTriggerProps,
 } from "@radix-ui/react-dropdown-menu"
 import { TransitionFn } from "@react-spring/web"
+
+// React Select
+import { GroupBase } from "react-select"
+import type { } from "react-select/base"
 
 export interface TestOrderProps {
     registrationID: string
@@ -53,4 +58,8 @@ export interface DropdownMenuContentProps extends DMContentProps {
 export interface NavigationMenuDropdownProps extends DMTriggerProps {
     trigger: { title: JSX.Element, withIcon: boolean }
     minWidth: string
+}
+
+export interface InputProps extends ComponentPropsWithRef<'input'> {
+    isFocused? : boolean
 }
