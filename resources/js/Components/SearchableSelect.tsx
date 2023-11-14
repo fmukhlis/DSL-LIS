@@ -1,12 +1,17 @@
 // React Select
 import Select, {
     Props,
+    GroupBase,
     StylesConfig,
 } from "react-select"
 
-const SearchableSelect = (props: Props<{ value: string, label: string }>) => {
+const SearchableSelect = <
+    Option,
+    IsMulti extends boolean = false,
+    Group extends GroupBase<Option> = GroupBase<Option>
+>(props: Props<Option, IsMulti, Group>) => {
 
-    const styles: StylesConfig<{ value: string, label: string }, false> = {
+    const styles: StylesConfig<Option, IsMulti, Group> = {
         option: (baseStyles, state) => ({
             ...baseStyles,
             backgroundColor: state.isSelected ? '#0d9488' : state.isFocused ? '#ccfbf1' : '',

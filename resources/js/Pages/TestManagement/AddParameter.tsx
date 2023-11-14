@@ -17,7 +17,6 @@ import {
     usePage,
 
 } from '@inertiajs/react'
-import Checkbox from '@/Components/Checkbox'
 
 const AddParameter = ({
     tests,
@@ -66,9 +65,7 @@ const AddParameter = ({
         const filteredTests = tests.filter(test => (test.category_id === data.category))
         setAddedTest(filteredTests)
 
-        if (!filteredTests.length) {
-            reset('test')
-        }
+        reset('test')
 
     }, [data.category])
 
@@ -160,24 +157,6 @@ const AddParameter = ({
                         placeholder={`Type parameter's name...`}
                         onChange={(e) => { setData('name', e.target.value) }}
                     />
-                    {/* <label className='w-full flex justify-between items-center text-sm'>
-                        <span>This test is automatic ?</span>
-                        <Checkbox
-                            checked={!data.is_manual}
-                            onChange={(e) => { setData('is_manual', !e.target.checked) }}
-                        />
-                    </label>
-                    <div className='flex items-center text-sm'>
-                        <label htmlFor="price">Price</label>
-                        <span className='ml-auto mr-1 text-gray-400'>Rp</span>
-                        <Input
-                            id='price'
-                            className='w-48'
-                            value={data.price}
-                            type='number'
-                            onChange={(e) => { setData('price', Number(e.target.value)) }}
-                        />
-                    </div> */}
                     <PrimaryButton
                         className='px-3 py-1.5 text-[0.8rem] w-24 mx-auto'
                         disabled={processing}

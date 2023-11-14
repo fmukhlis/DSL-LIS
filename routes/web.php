@@ -3,6 +3,7 @@
 use App\Http\Controllers\MasterDataController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StaffController;
 use App\Http\Controllers\TestController;
 use App\Models\Category;
 use App\Models\Parameter;
@@ -88,6 +89,17 @@ Route::prefix('/settings/master-data')
         Route::prefix('/staff-management')->group(function () {
             Route::get('/', [MasterDataController::class, 'staff'])
                 ->name('staff.management');
+
+            Route::controller(StaffController::class)->group(function () {
+                Route::post('/department', 'storeDepartment')
+                    ->name('manage.department');
+
+                Route::post('/specialization', 'storeSpecialization')
+                    ->name('manage.specialization');
+
+                Route::post('/doctor', 'storeDoctor')
+                    ->name('manage.doctor');
+            });
         });
 
         Route::prefix('/test-management')

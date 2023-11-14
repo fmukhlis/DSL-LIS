@@ -57,11 +57,9 @@ class TestController extends Controller
             'name' => 'required|string|max:50',
         ]);
 
-        $test = Test::find($request->test);
-        $parameter = Parameter::firstOrNew(['name' => $request->name]);
-
-        $test->parameters()->save($parameter);
-        $parameter->tests()->save($test);
+        Test::find($request->test)->parameters()->save(
+            Parameter::firstOrNew(['name' => $request->name])
+        );
 
         return back()->with('parameterAddMsg', 'Parameter added successfully!');
     }

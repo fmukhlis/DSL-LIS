@@ -42,8 +42,11 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'testAddMsg' => fn () => $request->session()->get('testAddMsg'),
                 'unitAddMsg' => fn () => $request->session()->get('unitAddMsg'),
+                'doctorAddMsg' => fn () => $request->session()->get('doctorAddMsg'),
                 'categoryAddMsg' => fn () => $request->session()->get('categoryAddMsg'),
                 'parameterAddMsg' => fn () => $request->session()->get('parameterAddMsg'),
+                'departmentAddMsg' => fn () => $request->session()->get('departmentAddMsg'),
+                'specializationAddMsg' => fn () => $request->session()->get('specializationAddMsg'),
             ],
         ];
     }

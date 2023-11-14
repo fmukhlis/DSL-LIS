@@ -73,7 +73,7 @@ const AddTest = ({
                     {errors.is_manual && <Alert formID={formID} message={errors.is_manual} type='error' />}
 
                     <Select
-                        placeholder='Select a category...'
+                        placeholder='Select category...'
                         value={data.category}
                         triggerProps={{
                             className: `px-2 py-1 w-28 ml-auto w-full py-2 bg-white border-gray-300 ${data.category !== '' ? 'text-black' : 'text-gray-500'}`

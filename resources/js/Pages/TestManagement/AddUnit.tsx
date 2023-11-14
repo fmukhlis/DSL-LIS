@@ -76,12 +76,12 @@ const AddUnit = ({
 
                     <SearchableSelect
                         options={options}
-                        onChange={(newValue: unknown) => {
-                            setData('parameter', (newValue as { value: string, label: string }).value)
-                        }}
                         maxMenuHeight={200}
                         className='text-sm'
                         placeholder="Search parameter's name..."
+                        onChange={(value: { value: string, label: string } | null) => {
+                            setData('parameter', value ? value.value : '')
+                        }}
                     />
 
                     {addedUnit.length
