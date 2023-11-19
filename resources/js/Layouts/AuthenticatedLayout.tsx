@@ -98,7 +98,7 @@ export default function AuthenticatedLayout({ user, header, children, className 
                         <NavigationMenuLink asChild>
                             <ResponsiveNavLink
                                 active={url.startsWith('/order-test') ? true : false}
-                                href={url === '/order-test' ? `#` : route('ordertest')}
+                                href={url === '/order-test' ? `#` : route('order.test')}
                             >
                                 <DiscordLogoIcon width={18} height={18} />
                             </ResponsiveNavLink>

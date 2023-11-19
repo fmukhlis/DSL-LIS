@@ -108,20 +108,28 @@ const AddUnit = ({
                         placeholder={`Type unit's name...`}
                         onChange={(e) => { setData('name', e.target.value) }}
                     />
-                    <Input
-                        step={0.1}
-                        type='number'
-                        value={data.min_abnormal}
-                        placeholder={`Min. abnormal value...`}
-                        onChange={(e) => { setData('min_abnormal', Number(e.target.value) > 0 ? Number(e.target.value) : 0) }}
-                    />
-                    <Input
-                        step={0.1}
-                        type='number'
-                        value={data.max_abnormal}
-                        placeholder={`Max. abnormal value...`}
-                        onChange={(e) => { setData('max_abnormal', Number(e.target.value) > 0 ? Number(e.target.value) : 0) }}
-                    />
+                    <div className='flex items-center justify-between'>
+                        <label className="text-sm" htmlFor="min_abnormal">Min. Abnormal Value</label>
+                        <Input
+                            step={0.1}
+                            type='number'
+                            className='w-44'
+                            id='min_abnormal'
+                            value={data.min_abnormal}
+                            onChange={(e) => { setData('min_abnormal', Number(e.target.value) > 0 ? Number(e.target.value) : 0) }}
+                        />
+                    </div>
+                    <div className='flex items-center justify-between'>
+                        <label className="text-sm" htmlFor="max_abnormal">Max. Abnormal Value</label>
+                        <Input
+                            step={0.1}
+                            type='number'
+                            className='w-44'
+                            id='max_abnormal'
+                            value={data.max_abnormal}
+                            onChange={(e) => { setData('max_abnormal', Number(e.target.value) > 0 ? Number(e.target.value) : 0) }}
+                        />
+                    </div>
                     <PrimaryButton
                         disabled={processing}
                         className='px-3 py-1.5 text-[0.8rem] w-24 mx-auto'

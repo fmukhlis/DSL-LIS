@@ -9,14 +9,13 @@ export default forwardRef<HTMLButtonElement, ComponentPropsWithRef<'button'>>(
             <button
                 {...props}
                 ref={forwardedRef}
-                className={
-                    `inline-flex items-center justify-center
-                    bg-teal-50 text-teal-500 border-teal-500
-                    hover:bg-teal-400 focus:bg-teal-400 active:bg-teal-600 focus:text-white hover:text-white
-                    focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 disabled:opacity-25
-                    border-2 rounded-sm transition ease-in-out duration-150
-                    font-semibold uppercase tracking-widest text-xs
-                    ${className}`
+                className={`inline-flex items-center justify-center
+                bg-gray-300 border-gray-300 text-gray-600
+                hover:bg-gray-400 focus:bg-gray-400 active:bg-gray-400
+                focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-25
+                border-2 rounded-sm transition ease-in-out duration-150
+                font-semibold uppercase tracking-widest text-xs
+                ${className}`
                 }
             >
                 {children}

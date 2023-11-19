@@ -1,11 +1,14 @@
 <?php
 
 use App\Http\Controllers\MasterDataController;
+use App\Http\Controllers\OrderTestController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\TestController;
 use App\Models\Category;
+use App\Models\Doctor;
+use App\Models\Order;
 use App\Models\Parameter;
 use App\Models\Test;
 use App\Models\Unit;
@@ -14,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 use App\Models\User;
+use Illuminate\Support\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,8 +42,25 @@ Route::get('/db/parameters', function () {
         'data' => $parameters
     ];
     return response()->json($data);
-})->middleware(['auth', 'verified'])->name('get.all.parameter');
+})->middleware(['auth', 'verified'])->name('get.all.parameters');
 
+Route::get('/db/orders', function () {
+    $data = Order::with(['tests', 'patient:name', 'doctor' => ['specializations']])
+        ->get()
+        ->setVisible(['registrationID', 'patientName', 'payment', 'referringPhysician', 'dateTime', 'tests'])
+        ->map(function ($item, int $key) {
+            $item->registrationID = $item->registration_id;
+            $item->patientName = $item->patient->name;
+            $item->payment = $item->payment_method;
+            $item->referringPhysician = 'Dr. ' . $item->doctor->name . ', ' . $item->doctor->specializations->implode('title', ', ');
+            $utcDate = Carbon::createFromFormat('Y-m-d H:i:s', $item->created_at, 'UTC');
+            $asiaJakartaDate = $utcDate->setTimezone('Asia/Jakarta');
+            $item->dateTime = $asiaJakartaDate;
+
+            return $item;
+        });
+    return response()->json($data);
+})->middleware(['auth', 'verified'])->name('get.all.orders');
 
 
 // Route::get('/', function () {
@@ -53,9 +74,13 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/order-test', function () {
-    return Inertia::render('OrderTest/OrderTest');
-})->middleware(['auth', 'verified'])->name('ordertest');
+Route::get('/order-test', [OrderTestController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('order.test');
+
+Route::post('/order-test', [OrderTestController::class, 'store'])
+    ->middleware(['auth', 'verified']);
+
 
 Route::get('/input-result', function () {
     return Inertia::render('InputResult/InputResult');

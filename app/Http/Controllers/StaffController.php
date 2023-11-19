@@ -28,8 +28,8 @@ class StaffController extends Controller
     public function storeDoctor(Request $request): RedirectResponse
     {
         $request->validate([
-            'array_of_specialization_ids' => 'required|array',
-            'array_of_specialization_ids.*' => 'exists:specializations,_id',
+            'specialization_ids' => 'required|array|min:1',
+            'specialization_ids.*' => 'exists:specializations,_id',
             'department_id' => 'required|exists:departments,_id',
             'name' => 'required|string|max:50',
         ]);
@@ -38,7 +38,7 @@ class StaffController extends Controller
             Doctor::firstOrNew(['name' => $request->name])
         );
 
-        $doctor->specializations()->sync($request->array_of_specialization_ids);
+        $doctor->specializations()->sync($request->specialization_ids);
 
         return back()->with('doctorAddMsg', 'Doctor added successfully!');
     }

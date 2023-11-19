@@ -26,16 +26,17 @@ import type { } from "react-select/base"
 
 export interface TestOrderProps {
     registrationID: string
-    patient: string
+    patientName: string
     payment: 'BPJS' | 'Self-Payment' | 'Insurance'
     referringPhysician: string
     dateTime: Date
-    test: string[]
+    tests: Record<string, unknown>[]
 }
 
 export interface DataTableProps<TData> {
-    columns: ColumnDef<TData>[]
     data: TData[]
+    columns: ColumnDef<TData>[]
+    isLoading: boolean
     getRowCanExpand: (row: Row<TData>) => boolean
     renderSubComponent: (props: {row: Row<TData>}) => React.ReactElement
 }

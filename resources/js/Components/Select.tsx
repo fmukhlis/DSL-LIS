@@ -43,7 +43,7 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>((props, f
                     }}
                     position="popper"
                     sideOffset={5}
-                    className="bg-white overflow-hidden border-2 p-1 rounded border-teal-500 text-sm z-10"
+                    className="bg-white overflow-hidden border-2 p-1 rounded border-teal-500 text-sm z-50"
                 >
                     <PrimitivesSelect.Viewport>
                         {props.children}

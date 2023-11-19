@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('units', function (Blueprint $collection) {
+        Schema::create('analysts', function (Blueprint $collection) {
+            $collection->string('pin');
+            $collection->array('title');
             $collection->string('name');
-            $collection->decimal('value', $precision = 8, $scale = 2);
-            $collection->decimal('min_abnormal', $precision = 8, $scale = 2);
-            $collection->decimal('max_abnormal', $precision = 8, $scale = 2);
+            $collection->string('signature');
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('units');
+        Schema::dropIfExists('analysts');
     }
 };

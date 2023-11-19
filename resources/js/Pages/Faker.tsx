@@ -33,7 +33,7 @@ const testOrdered = (count: number): string[] => {
 const newTestOrder = (): TestOrderProps => {
     return ({
         registrationID: faker.string.numeric(11),
-        patient: `${faker.person.firstName()} ${faker.person.lastName()}`,
+        patientName: `${faker.person.firstName()} ${faker.person.lastName()}`,
         payment: faker.helpers.arrayElement(['BPJS', 'Self-Payment', 'Insurance']),
         referringPhysician: `Dr. ${faker.person.firstName()} ${faker.person.lastName()}`,
         dateTime: faker.date.past(),

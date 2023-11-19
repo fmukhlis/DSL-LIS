@@ -7,10 +7,13 @@ import {
     StylesConfig,
 } from "react-select"
 
-const SearchableAsyncSelect = (
-    props: AsyncProps<{ value: string, label: string }, false, GroupBase<{ value: string, label: string }>>
-) => {
-    const styles: StylesConfig<{ value: string, label: string }, false> = {
+const SearchableAsyncSelect = <
+    Option = unknown,
+    IsMulti extends boolean = false,
+    Group extends GroupBase<Option> = GroupBase<Option>
+>(props: AsyncProps<Option, IsMulti, Group>) => {
+
+    const styles: StylesConfig<Option, IsMulti, Group> = {
         option: (baseStyles, state) => ({
             ...baseStyles,
             backgroundColor: state.isSelected ? '#0d9488' : state.isFocused ? '#ccfbf1' : '',

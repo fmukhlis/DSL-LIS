@@ -6,7 +6,7 @@ import Select, {
 } from "react-select"
 
 const SearchableSelect = <
-    Option,
+    Option = unknown,
     IsMulti extends boolean = false,
     Group extends GroupBase<Option> = GroupBase<Option>
 >(props: Props<Option, IsMulti, Group>) => {

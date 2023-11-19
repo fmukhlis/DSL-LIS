@@ -23,11 +23,13 @@ import {
     CaretSortIcon,
     CheckIcon,
     ThickArrowLeftIcon,
-    ThickArrowRightIcon
+    ThickArrowRightIcon,
+    UpdateIcon
 } from '@radix-ui/react-icons'
 
 // TanStack Table
 import {
+    FilterFn,
     flexRender,
     SortingState,
     useReactTable,
@@ -37,12 +39,12 @@ import {
     getFilteredRowModel,
     getExpandedRowModel,
     getPaginationRowModel,
-    FilterFn,
 } from "@tanstack/react-table"
 
 export default function DataTable({
     data,
     columns,
+    isLoading = false,
     getRowCanExpand,
     renderSubComponent,
 }: DataTableProps<TestOrderProps>) {
@@ -54,7 +56,6 @@ export default function DataTable({
         endDate?: string
         startDate?: string
     }>({})
-
 
     const table = useReactTable({
         data,
@@ -79,6 +80,7 @@ export default function DataTable({
     })
 
     const [rowCount, setRowCount] = useState<string>('10')
+
     useEffect(() => {
         table.setPageSize(Number(rowCount))
     }, [rowCount])
@@ -112,7 +114,9 @@ export default function DataTable({
                         }))
                     }}
                 />
+
                 <ArrowRightIcon className='mx-1 text-teal-600' />
+
                 <Input
                     type='date'
                     className='py-1 border-teal-800 bg-teal-50 text-teal-700 w-[9.5rem] form-input'
@@ -124,6 +128,7 @@ export default function DataTable({
                         }))
                     }}
                 />
+
                 <PrimaryButton
                     className='rounded-[999px] p-0.5 ml-2'
                     onClick={e => {
@@ -158,6 +163,7 @@ export default function DataTable({
                     >
                         BPJS
                     </PrimitivesToggleGroup.Item>
+
                     <PrimitivesToggleGroup.Item
                         value='Self-Payment'
                         className={`
@@ -168,6 +174,7 @@ export default function DataTable({
                     >
                         Self-Payment
                     </PrimitivesToggleGroup.Item>
+
                     <PrimitivesToggleGroup.Item
                         value='Insurance'
                         className={`
@@ -178,6 +185,7 @@ export default function DataTable({
                     >
                         Insurance
                     </PrimitivesToggleGroup.Item>
+
                 </PrimitivesToggleGroup.Root>
 
                 <PrimitivesSeparator.Root
@@ -247,30 +255,50 @@ export default function DataTable({
                         )}
                     </thead>
                     <tbody>
-                        {table.getRowModel().rows.map(row => {
-                            return (
-                                <React.Fragment key={row.id}>
-                                    <tr className={`bg-teal-${!row.getIsExpanded() ? '100 border-b' : '200'} border-teal-300 hover:bg-teal-200 duration-75`}>
-                                        {row.getVisibleCells().map(cell => (
-                                            <td key={cell.id} className="px-3.5 py-1.5">
-                                                {flexRender(
-                                                    cell.column.columnDef.cell,
-                                                    cell.getContext()
-                                                )}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                    {row.getIsExpanded() &&
+                        {
+                            !isLoading ? (
+                                table.getRowModel().rows.length
+                                    ? (
+                                        table.getRowModel().rows.map(row => {
+                                            return (
+                                                <React.Fragment key={row.id}>
+                                                    <tr className={`bg-teal-${!row.getIsExpanded() ? '100 border-b' : '200'} border-teal-300 hover:bg-teal-200 duration-75`}>
+                                                        {row.getVisibleCells().map(cell => (
+                                                            <td key={cell.id} className="px-3.5 py-1.5">
+                                                                {flexRender(
+                                                                    cell.column.columnDef.cell,
+                                                                    cell.getContext()
+                                                                )}
+                                                            </td>
+                                                        ))}
+                                                    </tr>
+                                                    {row.getIsExpanded() &&
+                                                        <tr className='border-b border-teal-300 bg-teal-50'>
+                                                            <td colSpan={row.getVisibleCells().length} className="px-3.5 py-1.5">
+                                                                {renderSubComponent({ row })}
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </React.Fragment>
+                                            )
+                                        })
+                                    ) : (
                                         <tr className='border-b border-teal-300 bg-teal-50'>
-                                            <td colSpan={row.getVisibleCells().length} className="px-3.5 py-1.5">
-                                                {renderSubComponent({ row })}
+                                            <td colSpan={6} className="px-3.5 py-1.5 text-center text-gray-400">
+                                                No orders currently.
                                             </td>
                                         </tr>
-                                    }
-                                </React.Fragment>
+                                    )
+                            ) : (
+                                <tr className='border-b border-teal-300 bg-teal-50'>
+                                    <td colSpan={6} className="px-3.5 py-1.5 text-gray-400">
+                                        <div className='flex items-center justify-center'>
+                                            Loading...<UpdateIcon className='animate-spin ml-2' />
+                                        </div>
+                                    </td>
+                                </tr>
                             )
                         }
-                        )}
                     </tbody>
                 </table>
             </div>

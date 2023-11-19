@@ -69,8 +69,8 @@ class TestController extends Controller
         $request->validate([
             'parameter' => 'required|exists:parameters,_id',
             'name' => 'required|string|max:10',
-            'min_abnormal' => 'required|numeric',
-            'max_abnormal' => 'required|numeric',
+            'min_abnormal' => 'required|numeric|min:0',
+            'max_abnormal' => 'required|numeric|gt:min_abnormal',
         ]);
 
         Parameter::find($request->parameter)->units()->save(

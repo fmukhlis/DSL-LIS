@@ -46,6 +46,7 @@ class HandleInertiaRequests extends Middleware
                 'categoryAddMsg' => fn () => $request->session()->get('categoryAddMsg'),
                 'parameterAddMsg' => fn () => $request->session()->get('parameterAddMsg'),
                 'departmentAddMsg' => fn () => $request->session()->get('departmentAddMsg'),
+                'operationResponse' => fn () => $request->session()->get('operationResponse'),
                 'specializationAddMsg' => fn () => $request->session()->get('specializationAddMsg'),
             ],
         ];

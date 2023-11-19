@@ -44,10 +44,7 @@ const AddDoctor = ({
     const { data, setData, errors, clearErrors, post, processing, reset, transform } = useForm<{
         name: string
         department_id: string
-        specialization_ids: {
-            value: string
-            label: string
-        }[]
+        specialization_ids: unknown[]
     }>({
         name: '',
         department_id: '',
@@ -56,7 +53,7 @@ const AddDoctor = ({
 
     transform(data => ({
         ...data,
-        array_of_specialization_ids: data.specialization_ids.map(specialization_id => specialization_id.value)
+        specialization_ids: data.specialization_ids.map(specialization_id => (specialization_id as { value: string, label: string }).value)
     }))
 
     useEffect(() => {
@@ -162,9 +159,7 @@ const AddDoctor = ({
                         className='text-sm'
                         value={data.specialization_ids}
                         placeholder="Select doctor's specialization..."
-                        onChange={(value: readonly { value: string, label: string }[]) => {
-                            setData('specialization_ids', [...value])
-                        }}
+                        onChange={(newValue) => { setData('specialization_ids', [...newValue]) }}
                     />
 
                     <PrimaryButton

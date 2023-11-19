@@ -1,20 +1,19 @@
 // Tanstack Table
-import { 
-    ColumnDef, 
-    FilterFnOption, 
+import {
+    ColumnDef,
+    FilterFnOption,
 } from "@tanstack/react-table";
 
 // Internal
 import { TestOrderProps } from '@/Types'
-import { 
-    CaretSortIcon,
-    Cross2Icon, 
-    TriangleDownIcon, 
-    TriangleUpIcon 
-} from "@radix-ui/react-icons";
 import PrimaryButton from "@/Components/PrimaryButton";
+import {
+    Cross2Icon,
+    TriangleDownIcon,
+    TriangleUpIcon
+} from "@radix-ui/react-icons";
 
-const dateTimeConfig : Intl.DateTimeFormatOptions = {
+const dateTimeConfig: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'short',
     day: '2-digit',
@@ -22,7 +21,7 @@ const dateTimeConfig : Intl.DateTimeFormatOptions = {
     minute: '2-digit',
 }
 
-export const columns : ColumnDef<TestOrderProps>[] = [
+export const columns: ColumnDef<TestOrderProps>[] = [
     {
         id: 'more',
         enableGlobalFilter: false,
@@ -34,8 +33,8 @@ export const columns : ColumnDef<TestOrderProps>[] = [
                         headerContext.table.getToggleAllRowsExpandedHandler()
                     }
                 >
-                    {headerContext.table.getIsAllRowsExpanded() 
-                        ? <TriangleUpIcon width={18} height={18} /> 
+                    {headerContext.table.getIsAllRowsExpanded()
+                        ? <TriangleUpIcon width={18} height={18} />
                         : <TriangleDownIcon width={18} height={18} />}
                 </PrimaryButton>
             </div>
@@ -43,20 +42,20 @@ export const columns : ColumnDef<TestOrderProps>[] = [
         cell: cellContext => {
             return (
                 <div className="flex items-center justify-center">
-                    {cellContext.row.getCanExpand() 
-                        ?   <PrimaryButton
-                                className="rounded-[99px]"
-                                onClick={cellContext.row.getToggleExpandedHandler()}
-                            >
-                                {cellContext.row.getIsExpanded() 
-                                    ? <TriangleUpIcon /> 
-                                    : <TriangleDownIcon />}
-                            </PrimaryButton>
-                        :   <Cross2Icon />
+                    {cellContext.row.getCanExpand()
+                        ? <PrimaryButton
+                            className="rounded-[99px]"
+                            onClick={cellContext.row.getToggleExpandedHandler()}
+                        >
+                            {cellContext.row.getIsExpanded()
+                                ? <TriangleUpIcon />
+                                : <TriangleDownIcon />}
+                        </PrimaryButton>
+                        : <Cross2Icon />
                     }
                 </div>
             )
-            
+
         }
     },
     {
@@ -74,7 +73,7 @@ export const columns : ColumnDef<TestOrderProps>[] = [
         ),
     },
     {
-        accessorKey: 'patient',
+        accessorKey: 'patientName',
         enableGlobalFilter: true,
         header: () => {
             return (
@@ -130,7 +129,7 @@ export const columns : ColumnDef<TestOrderProps>[] = [
         },
         cell: cellContext => (
             <div>
-                {cellContext.getValue<Date>().toLocaleDateString('en-GB', dateTimeConfig)}
+                {new Date(cellContext.getValue<string>()).toLocaleDateString('en-GB', dateTimeConfig)}
             </div>
         ),
     },
