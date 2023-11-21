@@ -31,7 +31,7 @@ export interface TestOrderProps {
     referringPhysician: string
     dateTime: Date
     tests: Record<string, unknown>[]
-    confirmed_at : unknown
+    confirmed_at : Date
 }
 
 export interface DataTableProps<TData> {

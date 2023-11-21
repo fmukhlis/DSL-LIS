@@ -6,11 +6,13 @@ import { Head } from "@inertiajs/react"
 // Internal
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout"
 
-const InputResult = () => {
+const InputResult = ({ orders }) => {
+  console.log(orders)
+
   return (
     <AuthenticatedLayout>
-        <Head title="Input Result"/>
-        HelloWorld
+      <Head title="Input Result" />
+      HelloWorld
     </AuthenticatedLayout>
   )
 }

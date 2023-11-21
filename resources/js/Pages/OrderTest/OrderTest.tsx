@@ -71,8 +71,8 @@ const OrderTest = ({
                     }
                   )
                   .then(
-                    data => {
-                      setData([...data])
+                    (data: TestOrderProps[]) => {
+                      setData(data.filter(d => d.confirmed_at === undefined))
                       setIsLoading(false)
                     }
                   )
@@ -96,7 +96,6 @@ const OrderTest = ({
             />
           </div>
           <Toast
-            duration={5000}
             ref={savedRef}
             title='Success!'
             icon={<CheckCircledIcon width={20} height={20} />}

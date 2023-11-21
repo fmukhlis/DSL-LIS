@@ -287,7 +287,7 @@ export default function DataTable({
                                     ) : (
                                         <tr className='border-b border-teal-300 bg-teal-50'>
                                             <td colSpan={6} className="px-3.5 py-1.5 text-center text-gray-400">
-                                                No orders currently.
+                                                No order found.
                                             </td>
                                         </tr>
                                     )

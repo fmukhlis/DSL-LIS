@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InputResultController;
 use App\Http\Controllers\MasterDataController;
 use App\Http\Controllers\OrderTestController;
 use Illuminate\Http\Request;
@@ -47,7 +48,7 @@ Route::get('/db/parameters', function () {
 Route::get('/db/orders', function () {
     $data = Order::with(['tests', 'patient:name', 'doctor' => ['specializations']])
         ->get()
-        ->setVisible(['registrationID', 'patientName', 'payment', 'referringPhysician', 'dateTime', 'tests'])
+        ->setVisible(['registrationID', 'patientName', 'payment', 'referringPhysician', 'dateTime', 'tests', 'confirmed_at'])
         ->map(function ($item, int $key) {
             $item->registrationID = $item->registration_id;
             $item->patientName = $item->patient->name;
@@ -75,11 +76,6 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
-
-
-Route::get('/input-result', function () {
-    return Inertia::render('InputResult/InputResult');
-})->middleware(['auth', 'verified'])->name('inputresult');
 
 Route::get('/validate-result', function () {
     return Inertia::render('ValidateResult/ValidateResult');
@@ -109,6 +105,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
                     Route::post('/', 'store');
                     Route::post('/details/{order:registration_id}', 'confirm');
+                });
+        });
+
+    Route::prefix('/input-result')
+        ->group(function () {
+            Route::controller(InputResultController::class)
+                ->group(function () {
+                    Route::get('/', 'index')->name('input.result');
                 });
         });
 
