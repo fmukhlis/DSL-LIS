@@ -5,19 +5,19 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
-use App\Models\Analyst;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
-
 
 use App\Models\Test;
 use App\Models\Order;
 use App\Models\Doctor;
+use App\Models\Analyst;
 use App\Models\Contact;
 use App\Models\Patient;
 use App\Models\Category;
 
-use Illuminate\Support\Carbon;
 
 class OrderTestController extends Controller
 {
@@ -25,7 +25,7 @@ class OrderTestController extends Controller
     {
         $orders = Order::with(['tests', 'patient:name', 'doctor' => ['specializations']])
             ->get()
-            ->setVisible(['registrationID', 'patientName', 'payment', 'referringPhysician', 'dateTime', 'tests'])
+            ->setVisible(['registrationID', 'patientName', 'payment', 'referringPhysician', 'dateTime', 'tests', 'confirmed_at'])
             ->map(function ($item, int $key) {
                 $item->registrationID = $item->registration_id;
                 $item->patientName = $item->patient->name;
@@ -100,14 +100,39 @@ class OrderTestController extends Controller
 
         $patient->orders()->save($order);
 
-        return back()->with('operationResponse', 'Order: ' . $order->_id . ' created!');
+        return back()->with('operationResponse', 'Order with ID:' . $order->_id . ' has been created successfully!');
+    }
+
+    public function detail(Order $order): Response
+    {
+        return Inertia::render('OrderTest/ConfirmOrder', [
+            'order' => $order->load([
+                'tests', 'patient' => ['contacts'],
+                'doctor' => ['department', 'specializations']
+            ]),
+            'analysts' => Analyst::all()
+        ]);
+    }
+
+    public function confirm(Order $order, Request $request): RedirectResponse
+    {
+        $request->validate([
+            'analyst' => 'required|exists:analysts,_id',
+            'pin' => 'required|digits:6',
+        ]);
+
+        $analyst = Analyst::find($request->analyst);
+
+        if (Hash::check($request->pin, $analyst->pin)) {
+            $order->confirmed_at = now();
+            $analyst->orders()->save($order);
+        } else {
+            return back()->withErrors(['pin' => "PIN not match!"]);
+        }
+
+        return redirect()->route('order.test')->with(
+            'operationResponse',
+            'The order with ID: ' . $order->registration_id . ' has been confirmed by ' . $analyst->name
+        );
     }
 }
-
-// $collection->string('note');
-// $collection->boolean('is_cito');
-// $collection->date('finished_at');
-// $collection->date('inputted_at');
-// $collection->date('validated_at');
-// $collection->integer('total_price');
-// $collection->enum('payment_method', ['BPJS', 'Insurance', 'Self-Payment']);

@@ -43,12 +43,15 @@ class HandleInertiaRequests extends Middleware
                 'testAddMsg' => fn () => $request->session()->get('testAddMsg'),
                 'unitAddMsg' => fn () => $request->session()->get('unitAddMsg'),
                 'doctorAddMsg' => fn () => $request->session()->get('doctorAddMsg'),
+                'analystAddMsg' => fn () => $request->session()->get('analystAddMsg'),
                 'categoryAddMsg' => fn () => $request->session()->get('categoryAddMsg'),
+                // 'confirmOrderMsg' => fn () => $request->session()->get('confirmOrderMsg'),
                 'parameterAddMsg' => fn () => $request->session()->get('parameterAddMsg'),
                 'departmentAddMsg' => fn () => $request->session()->get('departmentAddMsg'),
                 'operationResponse' => fn () => $request->session()->get('operationResponse'),
                 'specializationAddMsg' => fn () => $request->session()->get('specializationAddMsg'),
             ],
+            'asset' => asset('storage'),
         ];
     }
 }

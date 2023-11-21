@@ -85,6 +85,8 @@ export default function DataTable({
         table.setPageSize(Number(rowCount))
     }, [rowCount])
 
+
+
     return (
         <div>
             <div className='flex items-center p-2 bg-teal-200 rounded h-12 overflow-x-auto'>

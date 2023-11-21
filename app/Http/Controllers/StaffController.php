@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 
 use App\Models\Doctor;
+use App\Models\Analyst;
 use App\Models\Department;
 use App\Models\Specialization;
 
@@ -56,5 +58,41 @@ class StaffController extends Controller
         ]);
 
         return back()->with('specializationAddMsg', 'Specialization created successfully!');
+    }
+
+    public function storeAnalyst(Request $request): RedirectResponse
+    {
+        $flashMsg = "";
+
+        $validatedRequest = $request->validate([
+            'name' => 'required|string|max:50',
+            'title' => 'nullable|string|max:10',
+            'pin' => 'required|digits:6',
+            'signature' => 'nullable|image',
+        ]);
+
+        if ($request->hasFile('signature')) {
+            $validatedRequest['signature'] = $request
+                ->file('signature')
+                ->store('AnalystSignature', 'public');
+        } else {
+            $validatedRequest['signature'] = null;
+        }
+
+        $validatedRequest['pin'] = Hash::make($validatedRequest['pin']);
+
+        $analyst = Analyst::find($validatedRequest['name']);
+
+        if ($analyst) {
+            $validatedRequest = array_slice($validatedRequest, 1);
+            $analyst->update($validatedRequest);
+            $analyst->save();
+            $flashMsg = "Analyst updated successfully!";
+        } else {
+            Analyst::create($validatedRequest);
+            $flashMsg = "Analyst added successfully!";
+        }
+
+        return back()->with('analystAddMsg', $flashMsg);
     }
 }

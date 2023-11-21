@@ -7,13 +7,16 @@ import { Head } from "@inertiajs/react"
 import AddDoctor from "./AddDoctor"
 import CreateDepartment from "./CreateDepartment"
 import CreateSpecialization from "./CreateSpecialization"
+import AddAnalyst from "./AddAnalyst"
 
 const StaffManagement = ({
     doctors,
+    analysts,
     departments,
     specializations,
 }: {
     doctors: Record<string, unknown>[]
+    analysts: Record<string, unknown>[]
     departments: Record<string, unknown>[]
     specializations: Record<string, unknown>[]
 }) => {
@@ -29,6 +32,7 @@ const StaffManagement = ({
                     className='w-full max-w-md'
                     specializations={specializations}
                 />
+                <AddAnalyst analysts={analysts} className="w-full max-w-md" />
 
             </div>
         </AuthenticatedLayout>

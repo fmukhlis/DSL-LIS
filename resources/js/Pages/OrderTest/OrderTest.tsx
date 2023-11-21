@@ -33,17 +33,21 @@ const OrderTest = ({
   doctors: Record<string, unknown>[]
   categories: Record<string, unknown>[]
 }) => {
-  const [data, setData] = useState(() => [...orders])
+  const [data, setData] = useState(() => orders.filter(order => order.confirmed_at === undefined))
   const [isLoading, setIsLoading] = useState(false)
   const savedRef = useRef<{ publish: () => void }>(null)
 
-  const { flash } = usePage<{ flash: { operationResponse: string } }>().props
+  const { flash } = usePage<{
+    flash: {
+      operationResponse: string
+    }
+  }>().props
 
   useEffect(() => {
     if (flash.operationResponse) {
       savedRef.current?.publish()
     }
-    setData([...orders])
+    setData(() => orders.filter(order => order.confirmed_at === undefined))
   }, [flash.operationResponse])
 
   return (
@@ -98,7 +102,7 @@ const OrderTest = ({
             icon={<CheckCircledIcon width={20} height={20} />}
           >
             <div className="text-sm">
-              Order has been created successfully.
+              {flash.operationResponse}
             </div>
           </Toast>
         </div>
@@ -123,10 +127,10 @@ const renderSubComponent = ({ row }: { row: Row<TestOrderProps> }) => {
       ))}
       <PrimaryAnchor
         className="px-2 py-0.5 ml-auto"
-        href={route('dashboard')}
+        href={route('order.detail', { order: row.original.registrationID })}
       >
         See Detail
       </PrimaryAnchor>
-    </div>
+    </div >
   )
 }

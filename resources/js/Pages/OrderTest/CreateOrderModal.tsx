@@ -133,11 +133,7 @@ const CreateOrderModal = ({
       onOpenChange={setIsOpen}
     >
       <DialogTrigger asChild>
-        <PrimaryOutlineButton
-          className="px-3 py-2"
-        >
-          Make new order
-        </PrimaryOutlineButton>
+        <PrimaryOutlineButton className="px-3 py-2">Make new order</PrimaryOutlineButton>
       </DialogTrigger>
       <DialogContent className='h-full overflow-hidden select-none'>
 

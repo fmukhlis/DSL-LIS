@@ -15,11 +15,14 @@ class Order extends Model
         'is_cito',
         'finished_at',
         'inputted_at',
+        'confirmed_at',
         'validated_at',
         'total_price',
         'payment_method',
         'registration_id',
     ];
+
+    protected $casts = ['confirmed_at' => 'datetime'];
 
     public function tests()
     {

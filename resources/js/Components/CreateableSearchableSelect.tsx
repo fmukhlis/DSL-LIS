@@ -1,15 +1,15 @@
 // React Select
-import AsyncSelect, { AsyncProps } from "react-select/async"
+import CreateableSelect, { CreatableProps } from 'react-select/creatable'
 import {
     GroupBase,
     StylesConfig,
 } from "react-select"
 
-const SearchableAsyncSelect = <
+const CreateableSearchableSelect = <
     Option = unknown,
     IsMulti extends boolean = false,
     Group extends GroupBase<Option> = GroupBase<Option>
->(props: AsyncProps<Option, IsMulti, Group>) => {
+>(props: CreatableProps<Option, IsMulti, Group>) => {
 
     const styles: StylesConfig<Option, IsMulti, Group> = {
         option: (baseStyles, state) => ({
@@ -36,13 +36,11 @@ const SearchableAsyncSelect = <
     }
 
     return (
-        <AsyncSelect
+        <CreateableSelect
             {...props}
-            cacheOptions
-            defaultOptions
             styles={styles}
         />
     )
 }
 
-export default SearchableAsyncSelect
+export default CreateableSearchableSelect

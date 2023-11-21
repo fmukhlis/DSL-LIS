@@ -6,7 +6,7 @@ use Inertia\Response;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use App\Models\Analyst;
 use App\Models\Test;
 use App\Models\Unit;
 use App\Models\Category;
@@ -36,6 +36,7 @@ class MasterDataController extends Controller
     {
         return Inertia::render('StaffManagement/StaffManagement', [
             'doctors' => Doctor::all(),
+            'analysts' => Analyst::all(),
             'departments' => Department::all(),
             'specializations' => Specialization::all(),
         ]);

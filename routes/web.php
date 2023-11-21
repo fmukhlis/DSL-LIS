@@ -74,12 +74,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/order-test', [OrderTestController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('order.test');
 
-Route::post('/order-test', [OrderTestController::class, 'store'])
-    ->middleware(['auth', 'verified']);
 
 
 Route::get('/input-result', function () {
@@ -103,50 +98,66 @@ Route::get('/test-result', function () {
 
 
 
+Route::middleware(['auth', 'verified'])->group(function () {
 
-Route::prefix('/settings/master-data')
-    ->middleware(['auth', 'verified'])
-    ->group(function () {
+    Route::prefix('/order-test')
+        ->group(function () {
+            Route::controller(OrderTestController::class)
+                ->group(function () {
+                    Route::get('/', 'index')->name('order.test');
+                    Route::get('/details/{order:registration_id}', 'detail')->name('order.detail');
 
-        Route::get('/', [MasterDataController::class, 'index'])
-            ->name('master.data');
-
-        Route::prefix('/staff-management')->group(function () {
-            Route::get('/', [MasterDataController::class, 'staff'])
-                ->name('staff.management');
-
-            Route::controller(StaffController::class)->group(function () {
-                Route::post('/department', 'storeDepartment')
-                    ->name('manage.department');
-
-                Route::post('/specialization', 'storeSpecialization')
-                    ->name('manage.specialization');
-
-                Route::post('/doctor', 'storeDoctor')
-                    ->name('manage.doctor');
-            });
+                    Route::post('/', 'store');
+                    Route::post('/details/{order:registration_id}', 'confirm');
+                });
         });
 
-        Route::prefix('/test-management')
-            ->group(function () {
-                Route::get('/', [MasterDataController::class, 'test'])
-                    ->name('test.management');
+    Route::prefix('/settings/master-data')
+        ->group(function () {
+            Route::get('/', [MasterDataController::class, 'index'])
+                ->name('master.data');
 
-                Route::controller(TestController::class)->group(function () {
-                    Route::post('/category', 'storeCategory')
-                        ->name('manage.category');
+            Route::prefix('/staff-management')->group(function () {
+                Route::get('/', [MasterDataController::class, 'staff'])
+                    ->name('staff.management');
 
-                    Route::post('/test', 'storeTest')
-                        ->name('manage.test');
+                Route::controller(StaffController::class)->group(function () {
+                    Route::post('/department', 'storeDepartment')
+                        ->name('manage.department');
 
-                    Route::post('/parameter', 'storeParameter')
-                        ->name('manage.parameter');
+                    Route::post('/specialization', 'storeSpecialization')
+                        ->name('manage.specialization');
 
-                    Route::post('/unit', 'storeUnit')
-                        ->name('manage.unit');
+                    Route::post('/doctor', 'storeDoctor')
+                        ->name('manage.doctor');
+
+                    Route::post('/analyst', 'storeAnalyst')
+                        ->name('manage.analyst');
                 });
             });
-    });
+
+            Route::prefix('/test-management')
+                ->group(function () {
+                    Route::get('/', [MasterDataController::class, 'test'])
+                        ->name('test.management');
+
+                    Route::controller(TestController::class)->group(function () {
+                        Route::post('/category', 'storeCategory')
+                            ->name('manage.category');
+
+                        Route::post('/test', 'storeTest')
+                            ->name('manage.test');
+
+                        Route::post('/parameter', 'storeParameter')
+                            ->name('manage.parameter');
+
+                        Route::post('/unit', 'storeUnit')
+                            ->name('manage.unit');
+                    });
+                });
+        });
+});
+
 
 
 Route::middleware('auth')->group(function () {
