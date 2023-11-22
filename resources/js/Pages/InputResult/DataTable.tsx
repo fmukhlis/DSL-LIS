@@ -8,7 +8,7 @@ import Input from '@/Components/Input'
 import PrimaryButton from '@/Components/PrimaryButton'
 import {
     DataTableProps,
-    TestOrderProps,
+    InputResultProps,
 } from "@/Types"
 import {
     Select,
@@ -42,7 +42,6 @@ import {
     getExpandedRowModel,
     getPaginationRowModel,
 } from "@tanstack/react-table"
-import SecondaryButton from '@/Components/SecondaryButton'
 
 export default function DataTable({
     data,
@@ -50,8 +49,9 @@ export default function DataTable({
     isLoading = false,
     getRowCanExpand,
     renderSubComponent,
-}: DataTableProps<TestOrderProps>) {
+}: DataTableProps<InputResultProps>) {
 
+    const [datetimeColumnToBeFiltered, setDatetimeColumnToBeFiltered] = useState('confirmed_at')
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [globalFilter, setGlobalFilter] = React.useState('')
@@ -80,7 +80,7 @@ export default function DataTable({
         filterFns: {
             filterByDate: filterByDate,
         },
-        globalFilterFn: fuzzyFilter
+        globalFilterFn: fuzzyFilter,
     })
 
     const [rowCount, setRowCount] = useState<string>('10')
@@ -106,6 +106,33 @@ export default function DataTable({
                     orientation='vertical'
                     className='bg-teal-500 w-px h-full mx-2'
                 />
+
+                <Select
+                    value={datetimeColumnToBeFiltered}
+                    triggerProps={{
+                        className: 'mr-2 px-3 py-1 w-36 border-teal-800 text-teal-700'
+                    }}
+                    onValueChange={newValue => {
+                        table.getColumn(datetimeColumnToBeFiltered)?.setFilterValue({})
+                        setDateParam({})
+                        setDatetimeColumnToBeFiltered(newValue)
+                    }}
+                >
+                    {
+                        table.getAllColumns()
+                            .filter(column => column.getSortingFn().name === 'datetime')
+                            .map(column => (
+                                <SelectItem
+                                    key={column.id}
+                                    value={column.id}
+                                >
+                                    {
+                                        column.id === 'confirmed_at' ? 'Confirmed at' : 'Ordered at'
+                                    }
+                                </SelectItem>
+                            ))
+                    }
+                </Select>
 
                 <Input
                     type='date'
@@ -136,78 +163,11 @@ export default function DataTable({
                 <PrimaryButton
                     className='rounded-[999px] p-0.5 ml-2'
                     onClick={e => {
-                        table.getColumn('created_at')?.setFilterValue(
-                            Object.keys(dateParam).length !== 0
-                                ? dateParam
-                                : undefined)
+                        table.getColumn(datetimeColumnToBeFiltered)?.setFilterValue(dateParam)
                     }}
                 >
                     <CheckIcon />
                 </PrimaryButton>
-
-                {
-                    table.getColumn('created_at')?.getFilterValue() !== undefined
-                    &&
-                    <SecondaryButton
-                        className='rounded-[999px] p-0.5 ml-2'
-                        onClick={e => {
-                            table.getColumn('created_at')?.setFilterValue(undefined)
-                            setDateParam({})
-                        }}
-                    >
-                        <Cross2Icon />
-                    </SecondaryButton>
-                }
-
-                <PrimitivesSeparator.Root
-                    decorative
-                    orientation='vertical'
-                    className='bg-teal-500 w-px h-full mx-2'
-                />
-
-                <PrimitivesToggleGroup.Root
-                    type='multiple'
-                    value={table.getColumn('payment_method')?.getFilterValue() as string[] ?? []}
-                    aria-label='Payment method'
-                    onValueChange={e => {
-                        table.getColumn('payment_method')?.setFilterValue(e)
-                    }}
-                    className='flex items-center rounded gap-1'
-                >
-                    <PrimitivesToggleGroup.Item
-                        value='BPJS'
-                        className={`
-                            bg-teal-50 text-teal-700 text-sm px-5 py-1 rounded-sm border border-teal-700
-                            hover:bg-teal-100 data-[state=on]:bg-teal-500 data-[state=on]:text-teal-50
-                            focus:ring-teal-400 focus:outline-none focus:ring-2 focus:ring-offset-2
-                        `}
-                    >
-                        BPJS
-                    </PrimitivesToggleGroup.Item>
-
-                    <PrimitivesToggleGroup.Item
-                        value='Self-Payment'
-                        className={`
-                            bg-teal-50 text-teal-700 text-sm px-5 py-1 rounded-sm border border-teal-700
-                            hover:bg-teal-100 data-[state=on]:bg-teal-500 data-[state=on]:text-teal-50
-                            focus:ring-teal-400 focus:outline-none focus:ring-2 focus:ring-offset-2
-                        `}
-                    >
-                        Self-Payment
-                    </PrimitivesToggleGroup.Item>
-
-                    <PrimitivesToggleGroup.Item
-                        value='Insurance'
-                        className={`
-                            bg-teal-50 text-teal-700 text-sm px-5 py-1 rounded-sm border border-teal-700
-                            hover:bg-teal-100 data-[state=on]:bg-teal-500 data-[state=on]:text-teal-50
-                            focus:ring-teal-400 focus:outline-none focus:ring-2 focus:ring-offset-2
-                        `}
-                    >
-                        Insurance
-                    </PrimitivesToggleGroup.Item>
-
-                </PrimitivesToggleGroup.Root>
 
                 <PrimitivesSeparator.Root
                     decorative
@@ -217,10 +177,10 @@ export default function DataTable({
 
                 <PrimaryButton
                     onClick={() => {
-                        table.getColumn('created_at')?.toggleSorting(table.getColumn('created_at')?.getIsSorted() === 'asc')
+                        table.getColumn('confirmed_at')?.toggleSorting(table.getColumn('confirmed_at')?.getIsSorted() === 'asc')
                     }}
                 >
-                    <CaretSortIcon width={18} height={18} />
+                    <CaretSortIcon width={19} height={19} />
                 </PrimaryButton>
 
                 <PrimitivesSeparator.Root
@@ -257,7 +217,7 @@ export default function DataTable({
                                             <th
                                                 key={header.id}
                                                 colSpan={header.colSpan}
-                                                className={`text-start px-3.5 py-2 sticky top-0 bg-teal-600 ${header.id === 'more' && 'w-5'}`}
+                                                className={`text-start px-3.5 py-2 sticky top-0 bg-teal-600 ${header.id === 'more' || header.id === 'is_cito' && 'w-5'}`}
                                             >
                                                 {header.isPlaceholder
                                                     ? null

@@ -34,6 +34,7 @@
         "@radix-ui/react-toast": "^1.1.5",
         "@radix-ui/react-toggle-group": "^1.0.4",
         "@react-spring/web": "^9.7.3",
+        "@tanstack/match-sorter-utils": "^8.8.4",
         "@tanstack/react-table": "^8.10.7",
         "@types/jest": "^29.5.6",
         "@types/node": "^20.8.7",

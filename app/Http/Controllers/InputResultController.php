@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Inertia\Response;
 use Inertia\Inertia;
+use Inertia\Response;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+
+use App\Http\Controllers\Controller;
 
 use App\Models\Order;
 
@@ -13,8 +15,20 @@ class InputResultController extends Controller
 {
     public function index(): Response
     {
-        $orders = Order::with(['tests', 'patient:name', 'analyst:name,title'])
-            ->select('registration_id', 'is_cito', 'updated_at', 'created_at')
+        $orders = Order::whereNotNull('confirmed_at')
+            ->with([
+                'tests',
+                'patient:name',
+                'analyst:name,title'
+            ])
+            ->select([
+                'is_cito',
+                'analyst_id',
+                'created_at',
+                'patient_id',
+                'confirmed_at',
+                'registration_id',
+            ])
             ->get();
 
         return Inertia::render('InputResult/InputResult', [

@@ -46,20 +46,21 @@ Route::get('/db/parameters', function () {
 })->middleware(['auth', 'verified'])->name('get.all.parameters');
 
 Route::get('/db/orders', function () {
-    $data = Order::with(['tests', 'patient:name', 'doctor' => ['specializations']])
-        ->get()
-        ->setVisible(['registrationID', 'patientName', 'payment', 'referringPhysician', 'dateTime', 'tests', 'confirmed_at'])
-        ->map(function ($item, int $key) {
-            $item->registrationID = $item->registration_id;
-            $item->patientName = $item->patient->name;
-            $item->payment = $item->payment_method;
-            $item->referringPhysician = 'Dr. ' . $item->doctor->name . ', ' . $item->doctor->specializations->implode('title', ', ');
-            $utcDate = Carbon::createFromFormat('Y-m-d H:i:s', $item->created_at, 'UTC');
-            $asiaJakartaDate = $utcDate->setTimezone('Asia/Jakarta');
-            $item->dateTime = $asiaJakartaDate;
-
-            return $item;
-        });
+    $data = Order::with([
+        'tests',
+        'patient:name',
+        'doctor:name' => ['specializations']
+    ])
+        ->select([
+            'is_cito',
+            'doctor_id',
+            'created_at',
+            'patient_id',
+            'confirmed_at',
+            'payment_method',
+            'registration_id',
+        ])
+        ->get();
     return response()->json($data);
 })->middleware(['auth', 'verified'])->name('get.all.orders');
 
@@ -113,6 +114,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::controller(InputResultController::class)
                 ->group(function () {
                     Route::get('/', 'index')->name('input.result');
+                    Route::get('/details/{order:registration_id}', 'detail')->name('input.result.detail');
                 });
         });
 

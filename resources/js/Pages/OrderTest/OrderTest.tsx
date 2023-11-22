@@ -22,7 +22,7 @@ import { TestOrderProps } from "@/Types"
 import { CheckCircledIcon, UpdateIcon } from "@radix-ui/react-icons"
 import { Toast, ToastProvider, ToastTitle, ToastViewport } from "@/Components/Toast"
 
-const defaultData: TestOrderProps[] = generateOrderData(10)
+// const defaultData: TestOrderProps[] = generateOrderData(10)
 
 const OrderTest = ({
   orders,
@@ -126,7 +126,7 @@ const renderSubComponent = ({ row }: { row: Row<TestOrderProps> }) => {
       ))}
       <PrimaryAnchor
         className="px-2 py-0.5 ml-auto"
-        href={route('order.detail', { order: row.original.registrationID })}
+        href={route('order.detail', { order: row.original.registration_id })}
       >
         See Detail
       </PrimaryAnchor>

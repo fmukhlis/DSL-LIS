@@ -25,13 +25,65 @@ import { GroupBase } from "react-select"
 import type { } from "react-select/base"
 
 export interface TestOrderProps {
-    registrationID: string
-    patientName: string
-    payment: 'BPJS' | 'Self-Payment' | 'Insurance'
-    referringPhysician: string
-    dateTime: Date
-    tests: Record<string, unknown>[]
+    is_cito: boolean
+    created_at: Date
+    doctor_id: string
+    patient_id: string
     confirmed_at : Date
+    registration_id: string
+    payment_method: 'BPJS' | 'Self-Payment' | 'Insurance'
+
+    patient: {
+        _id: string
+        name: string
+    }
+    doctor: {
+        _id: string
+        name: string
+        specializations: {
+            _id: string
+            name: string
+            title: string
+            doctor_ids: string[]
+        }[]
+    }
+    tests: {
+        _id: string
+        name: string
+        category_id: string
+        is_manual: boolean
+        order_id: string[]
+        parameter_ids: string[]
+        price: number
+    }[]
+}
+
+export interface InputResultProps {
+    registration_id: string
+    confirmed_at : Date
+    created_at: Date
+    patient_id: string
+    analyst_id: string
+    is_cito: boolean
+
+    patient: {
+        _id: string
+        name: string
+    }
+    analyst: {
+        _id: string
+        name: string
+        title: string
+    }
+    tests: {
+        _id: string
+        name: string
+        category_id: string
+        is_manual: boolean
+        order_id: string[]
+        parameter_ids: string[]
+        price: number
+    }[]
 }
 
 export interface DataTableProps<TData> {

@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-table";
 
 // Internal
-import { TestOrderProps } from '@/Types'
+import { InputResultProps } from '@/Types'
 import PrimaryButton from "@/Components/PrimaryButton";
 import {
     CheckCircledIcon,
@@ -23,7 +23,7 @@ const dateTimeConfig: Intl.DateTimeFormatOptions = {
     minute: '2-digit',
 }
 
-export const columns: ColumnDef<TestOrderProps>[] = [
+export const columns: ColumnDef<InputResultProps>[] = [
     {
         id: 'more',
         enableGlobalFilter: false,
@@ -85,27 +85,12 @@ export const columns: ColumnDef<TestOrderProps>[] = [
         },
     },
     {
-        accessorKey: 'payment_method',
-        enableGlobalFilter: false,
-        filterFn: 'arrIncludesSome',
-        header: () => {
-            return (
-                <div>Payment</div>
-            )
-        },
-        cell: cellContext => (
-            <div>
-                {cellContext.getValue<'BPJS' | 'Self-Payment' | 'Insurance'>()}
-            </div>
-        ),
-    },
-    {
-        accessorKey: 'doctor',
+        accessorKey: 'analyst',
         enableGlobalFilter: true,
-        accessorFn: row => `Dr. ${row.doctor.name}, ${row.doctor.specializations.map(specialization => specialization.title)}`,
+        accessorFn: row => `${row.analyst.name}, ${row.analyst.title}`,
         header: () => {
             return (
-                <div>Referring Physician</div>
+                <div>Confirming Analyst</div>
             )
         },
     },
@@ -132,9 +117,23 @@ export const columns: ColumnDef<TestOrderProps>[] = [
         sortingFn: 'datetime',
         header: headerContext => {
             return (
-                <div className="flex items-center">
-                    Order Date
-                </div>
+                <div>Ordered At</div>
+            )
+        },
+        cell: cellContext => (
+            <div>
+                {new Date(cellContext.getValue<string>()).toLocaleDateString('en-GB', dateTimeConfig)}
+            </div>
+        ),
+    },
+    {
+        accessorKey: 'confirmed_at',
+        enableGlobalFilter: false,
+        filterFn: 'filterByDate' as FilterFnOption<any>,
+        sortingFn: 'datetime',
+        header: headerContext => {
+            return (
+                <div>Confirmed At</div>
             )
         },
         cell: cellContext => (

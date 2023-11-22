@@ -23,20 +23,21 @@ class OrderTestController extends Controller
 {
     public function index(): Response
     {
-        $orders = Order::with(['tests', 'patient:name', 'doctor' => ['specializations']])
-            ->get()
-            ->setVisible(['registrationID', 'patientName', 'payment', 'referringPhysician', 'dateTime', 'tests', 'confirmed_at'])
-            ->map(function ($item, int $key) {
-                $item->registrationID = $item->registration_id;
-                $item->patientName = $item->patient->name;
-                $item->payment = $item->payment_method;
-                $item->referringPhysician = 'Dr. ' . $item->doctor->name . ', ' . $item->doctor->specializations->implode('title', ', ');
-                $utcDate = Carbon::createFromFormat('Y-m-d H:i:s', $item->created_at, 'UTC');
-                $asiaJakartaDate = $utcDate->setTimezone('Asia/Jakarta');
-                $item->dateTime = $asiaJakartaDate;
-
-                return $item;
-            });
+        $orders = Order::with([
+            'tests',
+            'patient:name',
+            'doctor:name' => ['specializations']
+        ])
+            ->select([
+                'is_cito',
+                'doctor_id',
+                'created_at',
+                'patient_id',
+                'confirmed_at',
+                'payment_method',
+                'registration_id',
+            ])
+            ->get();
 
         return Inertia::render('OrderTest/OrderTest', [
             'doctors' => Doctor::with('specializations')->get(),
