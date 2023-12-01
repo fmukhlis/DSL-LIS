@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-table";
 
 // Internal
-import { InputResultProps } from '@/Types'
+import { InputResultProps, OrderModelProps } from '@/Types'
 import PrimaryButton from "@/Components/PrimaryButton";
 import {
     CheckCircledIcon,
@@ -23,7 +23,7 @@ const dateTimeConfig: Intl.DateTimeFormatOptions = {
     minute: '2-digit',
 }
 
-export const columns: ColumnDef<InputResultProps>[] = [
+export const columns: ColumnDef<OrderModelProps>[] = [
     {
         id: 'more',
         enableGlobalFilter: false,
@@ -77,7 +77,7 @@ export const columns: ColumnDef<InputResultProps>[] = [
     {
         accessorKey: 'patient',
         enableGlobalFilter: true,
-        accessorFn: row => `${row.patient.name}`,
+        accessorFn: row => `${row.patient!.name}`,
         header: () => {
             return (
                 <div>Patient</div>
@@ -87,7 +87,7 @@ export const columns: ColumnDef<InputResultProps>[] = [
     {
         accessorKey: 'analyst',
         enableGlobalFilter: true,
-        accessorFn: row => `${row.analyst.name}, ${row.analyst.title}`,
+        accessorFn: row => `${row.analyst!.name}, ${row.analyst!.title}`,
         header: () => {
             return (
                 <div>Confirming Analyst</div>

@@ -8,7 +8,7 @@ import Input from '@/Components/Input'
 import PrimaryButton from '@/Components/PrimaryButton'
 import {
     DataTableProps,
-    TestOrderProps,
+    OrderModelProps,
 } from "@/Types"
 import {
     Select,
@@ -50,7 +50,7 @@ export default function DataTable({
     isLoading = false,
     getRowCanExpand,
     renderSubComponent,
-}: DataTableProps<TestOrderProps>) {
+}: DataTableProps<OrderModelProps>) {
 
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])

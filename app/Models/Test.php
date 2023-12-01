@@ -27,8 +27,8 @@ class Test extends Model
         return $this->belongsTo(Category::class);
     }
 
-    // public function orders()
-    // {
-    //     return $this->belongsToMany(Order::class);
-    // }
+    public function results()
+    {
+        return $this->hasMany(Result::class);
+    }
 }

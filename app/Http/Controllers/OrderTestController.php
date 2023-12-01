@@ -17,27 +17,19 @@ use App\Models\Analyst;
 use App\Models\Contact;
 use App\Models\Patient;
 use App\Models\Category;
-
+use App\Models\Parameter;
+use App\Models\ParameterValue;
+use App\Models\Result;
 
 class OrderTestController extends Controller
 {
     public function index(): Response
     {
         $orders = Order::with([
-            'tests',
-            'patient:name',
-            'doctor:name' => ['specializations']
-        ])
-            ->select([
-                'is_cito',
-                'doctor_id',
-                'created_at',
-                'patient_id',
-                'confirmed_at',
-                'payment_method',
-                'registration_id',
-            ])
-            ->get();
+            'results' => ['test'],
+            'patient',
+            'doctor' => ['specializations']
+        ])->get();
 
         return Inertia::render('OrderTest/OrderTest', [
             'doctors' => Doctor::with('specializations')->get(),
@@ -69,15 +61,45 @@ class OrderTestController extends Controller
 
         $order->save();
 
-        $order->tests()->sync(
-            collect($request->tests)->map(function (string $item, int $key) {
-                return Test::find($item)->_id;
-            })->all()
+        $order->results()->saveMany(
+            collect($request->tests)->map(function (string $test_id, int $key) {
+                $result = Test::find($test_id)->results()->save(new Result());
+                $result->parameterValues()->saveMany(
+                    $result->test->parameters->map(function ($parameterInstance, int $key) {
+                        return new ParameterValue(['value' => 0, 'parameter_id' => $parameterInstance->_id]);
+                    })
+                );
+                return $result;
+            })
         );
 
-        $order->total_price = $order->tests()->whereIn('_id', $request->tests)->get()->reduce(function (int $carry, Test $value) {
-            return $carry + $value->price;
-        }, 0);
+        // $order->results()->first()->test->parameters()->first()->parameterValues()->save(
+        //     new ParameterValue([
+        //         'value' => 0,
+        //         'parameter_id' => '12345678',
+        //     ])
+        // );
+
+        // $order->results->each(function ($resultInstance, int $key) {
+        //     $resultInstance->parameterValues()->saveMany(
+        //         $resultInstance->test->parameters->map(function ($parameterInstance, int $key) {
+        //             return $parameterInstance->parameterValues()->save(
+        //                 new ParameterValue(['value' => 0])
+        //             );
+        //         })
+        //     );
+        // });
+
+        // $order->tests()->sync(
+        //     collect($request->tests)->map(function (string $item, int $key) {
+        //         return Test::find($item)->_id;
+        //     })->all()
+        // );
+
+        $order->total_price = $order->results()->whereIn('test_id', $request->tests)->get()
+            ->reduce(function (int $carry, Result $result) {
+                return $carry + $result->test->price;
+            }, 0);
 
         $order->save();
 
@@ -101,22 +123,28 @@ class OrderTestController extends Controller
 
         $patient->orders()->save($order);
 
-        return back()->with('operationResponse', 'Order with ID:' . $order->_id . ' has been created successfully!');
+        return back()->with('operationResponse', 'Order with ID: ' . $order->registration_id . ' has been created successfully!');
     }
 
     public function detail(Order $order): Response
     {
         return Inertia::render('OrderTest/ConfirmOrder', [
             'order' => $order->load([
-                'tests', 'patient' => ['contacts'],
-                'doctor' => ['department', 'specializations']
+                'results' => ['test'],
+                'patient' => ['contacts'],
+                'doctor' => [
+                    'department',
+                    'specializations'
+                ],
             ]),
-            'analysts' => Analyst::all()
+            'analysts' => Analyst::all(),
         ]);
     }
 
     public function confirm(Order $order, Request $request): RedirectResponse
     {
+        $isRedirect = true;
+
         $request->validate([
             'analyst' => 'required|exists:analysts,_id',
             'pin' => 'required|digits:6',
@@ -125,15 +153,20 @@ class OrderTestController extends Controller
         $analyst = Analyst::find($request->analyst);
 
         if (Hash::check($request->pin, $analyst->pin)) {
+            $isRedirect = $order->confirmed_at === null;
             $order->confirmed_at = now();
             $analyst->orders()->save($order);
         } else {
             return back()->withErrors(['pin' => "PIN not match!"]);
         }
 
-        return redirect()->route('order.test')->with(
-            'operationResponse',
-            'The order with ID: ' . $order->registration_id . ' has been confirmed by ' . $analyst->name
-        );
+        if ($isRedirect) {
+            return redirect()->route('order.test')->with(
+                'operationResponse',
+                'The order with ID: ' . $order->registration_id . ' has been confirmed by ' . $analyst->name
+            );
+        }
+
+        return back();
     }
 }

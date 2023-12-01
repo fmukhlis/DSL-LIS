@@ -8,7 +8,7 @@ import { Head } from "@inertiajs/react"
 
 // Internal
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout"
-import { InputResultProps } from "@/Types"
+import { OrderModelProps } from "@/Types"
 import DataTable from "./DataTable"
 import { columns } from "./Columns"
 import PrimaryAnchor from "@/Components/PrimaryAnchor"
@@ -16,7 +16,7 @@ import PrimaryButton from "@/Components/PrimaryButton"
 import { UpdateIcon } from "@radix-ui/react-icons"
 import PrimaryOutlineAnchor from "@/Components/PrimaryOutlineAnchor"
 
-const InputResult = ({ orders }: { orders: InputResultProps[] }) => {
+const InputResult = ({ orders }: { orders: OrderModelProps[] }) => {
   const [data, setData] = useState(() => [...orders])
   const [isLoading, setIsLoading] = useState(false)
 
@@ -39,7 +39,7 @@ const InputResult = ({ orders }: { orders: InputResultProps[] }) => {
             className="px-3 py-2 ml-auto"
             onClick={() => {
               setIsLoading(true)
-              fetch(route('get.all.orders'))
+              fetch(route('get.confirmed.orders'))
                 .then(
                   response => {
                     if (!response.ok) {
@@ -49,8 +49,8 @@ const InputResult = ({ orders }: { orders: InputResultProps[] }) => {
                   }
                 )
                 .then(
-                  (data: InputResultProps[]) => {
-                    setData(data.filter(d => d.confirmed_at === undefined))
+                  (data) => {
+                    setData(data)
                     setIsLoading(false)
                   }
                 )
@@ -80,15 +80,18 @@ const InputResult = ({ orders }: { orders: InputResultProps[] }) => {
 
 export default InputResult
 
-const renderSubComponent = ({ row }: { row: Row<InputResultProps> }) => {
+const renderSubComponent = ({ row }: { row: Row<OrderModelProps> }) => {
   return (
     <div className="flex items-center">
       <div className="mr-2">
         Test ordered :
       </div>
-      {row.original.tests.map((test) => (
-        <div key={test._id as string} className={`px-2 py-0.5 bg-teal-600 rounded-md text-white mr-1 flex items-center`}>
-          {test.name as string}
+      {row.original.results.map((result) => (
+        <div
+          key={result._id}
+          className={`px-2 py-0.5 bg-teal-600 rounded-md text-white mr-1 flex items-center`}
+        >
+          {result.test!.name}
         </div>
       ))}
       <PrimaryAnchor

@@ -45,24 +45,7 @@ Route::get('/db/parameters', function () {
     return response()->json($data);
 })->middleware(['auth', 'verified'])->name('get.all.parameters');
 
-Route::get('/db/orders', function () {
-    $data = Order::with([
-        'tests',
-        'patient:name',
-        'doctor:name' => ['specializations']
-    ])
-        ->select([
-            'is_cito',
-            'doctor_id',
-            'created_at',
-            'patient_id',
-            'confirmed_at',
-            'payment_method',
-            'registration_id',
-        ])
-        ->get();
-    return response()->json($data);
-})->middleware(['auth', 'verified'])->name('get.all.orders');
+
 
 
 // Route::get('/', function () {
@@ -102,6 +85,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::controller(OrderTestController::class)
                 ->group(function () {
                     Route::get('/', 'index')->name('order.test');
+                    Route::get('/api', function () {
+                        $data = Order::whereNull('confirmed_at')
+                            ->with([
+                                'results' => ['test'],
+                                'patient',
+                                'doctor' => ['specializations']
+                            ])->get();
+
+                        return response()->json($data);
+                    })->name('get.created.orders');
                     Route::get('/details/{order:registration_id}', 'detail')->name('order.detail');
 
                     Route::post('/', 'store');
@@ -115,6 +108,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->group(function () {
                     Route::get('/', 'index')->name('input.result');
                     Route::get('/details/{order:registration_id}', 'detail')->name('input.result.detail');
+
+                    Route::post('/details/{order:registration_id}', 'store');
+                    Route::post('/proceed/{order:registration_id}', 'proceed')->name('input.result.proceed');
+
+                    Route::get('/api', function () {
+                        $data = Order::whereNotNull('confirmed_at')
+                            ->whereNull('inputted_at')
+                            ->with([
+                                'results' => ['test'],
+                                'patient',
+                                'analyst',
+                            ])->get();
+
+                        return response()->json($data);
+                    })->name('get.confirmed.orders');
                 });
         });
 

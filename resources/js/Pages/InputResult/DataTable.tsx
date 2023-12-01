@@ -9,6 +9,7 @@ import PrimaryButton from '@/Components/PrimaryButton'
 import {
     DataTableProps,
     InputResultProps,
+    OrderModelProps,
 } from "@/Types"
 import {
     Select,
@@ -49,7 +50,7 @@ export default function DataTable({
     isLoading = false,
     getRowCanExpand,
     renderSubComponent,
-}: DataTableProps<InputResultProps>) {
+}: DataTableProps<OrderModelProps>) {
 
     const [datetimeColumnToBeFiltered, setDatetimeColumnToBeFiltered] = useState('confirmed_at')
     const [sorting, setSorting] = useState<SortingState>([])
@@ -113,7 +114,7 @@ export default function DataTable({
                         className: 'mr-2 px-3 py-1 w-36 border-teal-800 text-teal-700'
                     }}
                     onValueChange={newValue => {
-                        table.getColumn(datetimeColumnToBeFiltered)?.setFilterValue({})
+                        table.getColumn(datetimeColumnToBeFiltered)?.setFilterValue(undefined)
                         setDateParam({})
                         setDatetimeColumnToBeFiltered(newValue)
                     }}
@@ -163,7 +164,10 @@ export default function DataTable({
                 <PrimaryButton
                     className='rounded-[999px] p-0.5 ml-2'
                     onClick={e => {
-                        table.getColumn(datetimeColumnToBeFiltered)?.setFilterValue(dateParam)
+                        table.getColumn(datetimeColumnToBeFiltered)?.setFilterValue(
+                            Object.keys(dateParam).length !== 0
+                                ? dateParam
+                                : undefined)
                     }}
                 >
                     <CheckIcon />

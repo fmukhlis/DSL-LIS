@@ -28,19 +28,23 @@ import {
 import { useForm } from '@inertiajs/react'
 import { FilePlusIcon, UpdateIcon } from '@radix-ui/react-icons'
 import Alert from '@/Components/Alert'
+import {
+  CategoryModelProps,
+  DoctorModelProps,
+} from '@/Types'
 
 const CreateOrderModal = ({
   doctors,
   categories,
 }: {
-  doctors: Record<string, unknown>[]
-  categories: Record<string, unknown>[]
+  doctors: DoctorModelProps[]
+  categories: CategoryModelProps[]
 }) => {
 
   const doctorOptions = doctors !== undefined
     ? doctors.map(doctor => ({
       value: doctor._id,
-      label: `Dr. ${doctor.name},${(doctor.specializations as Record<string, unknown>[]).map(specialization => ` ${specialization.title}`)}`,
+      label: `Dr. ${doctor.name},${doctor.specializations!.map(specialization => ` ${specialization.title}`)}`,
     }))
     : []
 
@@ -135,7 +139,7 @@ const CreateOrderModal = ({
       <DialogTrigger asChild>
         <PrimaryOutlineButton className="px-3 py-2">Make new order</PrimaryOutlineButton>
       </DialogTrigger>
-      <DialogContent className='h-full overflow-hidden select-none'>
+      <DialogContent className='w-[600px] h-full overflow-hidden select-none'>
 
         <form
           onSubmit={submitForm}
@@ -143,11 +147,11 @@ const CreateOrderModal = ({
         >
           <DialogTitle
             className="
-            pt-6 pl-7 pr-6 pb-2 z-10
-            flex items-center justify-between 
-            font-bold uppercase text-teal-800 text-lg
-            shadow-[0px_0px_13px_7px_rgba(240,_253,_250,_1)]
-          "
+              pt-6 pl-7 pr-6 pb-2 z-10
+              flex items-center justify-between 
+              font-bold uppercase text-teal-800 text-lg
+              shadow-[0px_0px_13px_7px_rgba(240,_253,_250,_1)]
+            "
           >
             Order Test
             <FilePlusIcon width={22} height={22} />
@@ -201,12 +205,12 @@ const CreateOrderModal = ({
                             key={category._id as string}
                             value={category._id as string}
                             className="
-                      px-2 uppercase py-1 rounded duration-150 select-none outline-none ring-offset-2 ring-teal-400 cursor-default
-                      bg-teal-800 
-                      hover:bg-teal-600
-                      data-[state=active]:bg-teal-600
-                      focus:ring-2 
-                    "
+                              px-2 uppercase py-1 rounded duration-150 select-none outline-none ring-offset-2 ring-teal-400 cursor-default
+                              bg-teal-800 
+                              hover:bg-teal-600
+                              data-[state=active]:bg-teal-600
+                              focus:ring-2 
+                            "
                           >
                             {category.name as string}
                           </PrimitivesTabs.Trigger>
@@ -220,27 +224,26 @@ const CreateOrderModal = ({
                         value={category._id as string}
                       >
                         <div className="p-2 rounded text-sm flex flex-wrap gap-y-[2px] outline-none bg-white max-h-[150px] overflow-y-auto">
-                          {(category.tests as Record<string, unknown>[]).length
-                            ? (
-                              category.tests as Record<string, unknown>[]).map(test => (
-                                <label
-                                  key={test._id as string}
-                                  className="flex items-center gap-2 shrink-0 grow-0 basis-1/2"
-                                >
-                                  <Checkbox
-                                    checked={data.tests.some(dataTest => (dataTest as Record<string, unknown>)._id === test._id)}
-                                    onChange={(e) => {
-                                      if (e.target.checked) {
-                                        setData('tests', [...data.tests as Record<string, unknown>[], test])
-                                      } else {
-                                        setData('tests', (data.tests as Record<string, unknown>[]).filter(dataTest => dataTest._id !== test._id))
-                                      }
-                                    }}
-                                  />
-                                  <span>{test.name as string}</span>
-                                </label>
-                              )
-                              ) : (
+                          {category.tests!.length
+                            ? category.tests!.map(test => (
+                              <label
+                                key={test._id as string}
+                                className="flex items-center gap-2 shrink-0 grow-0 basis-1/2"
+                              >
+                                <Checkbox
+                                  checked={data.tests.some(dataTest => (dataTest as Record<string, unknown>)._id === test._id)}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setData('tests', [...data.tests as Record<string, unknown>[], test])
+                                    } else {
+                                      setData('tests', (data.tests as Record<string, unknown>[]).filter(dataTest => dataTest._id !== test._id))
+                                    }
+                                  }}
+                                />
+                                <span>{test.name as string}</span>
+                              </label>
+                            )
+                            ) : (
                               <div className='mx-auto text-gray-400'>No test found on this category.</div>
                             )
                           }
@@ -311,11 +314,11 @@ const CreateOrderModal = ({
             />
           </div>
 
-          <div className='flex items-center px-6 py-3 shadow-[0px_0px_13px_7px_rgba(240,_253,_250,_1)] mt-auto'>
+          <div className='flex items-center px-6 py-3 gap-3 shadow-[0px_0px_13px_7px_rgba(240,_253,_250,_1)] mt-auto'>
             {
               data.tests.length
                 ? (
-                  <div className='font-bold text-[1.05rem] flex gap-1 text-teal-800'>
+                  <div className='font-bold text-[1.05rem] flex gap-1 text-teal-800 mr-auto'>
                     Total {(data.tests as Record<string, unknown>[])
                       .reduce((accumulator, dataTest) => (
                         accumulator + ((dataTest as Record<string, unknown>).price as number)
@@ -331,14 +334,14 @@ const CreateOrderModal = ({
             }
             <DialogClose aria-label="Close" asChild>
               <SecondaryButton
-                className='py-2 px-3 ml-auto'
+                className='py-2 px-3'
               >
                 Cancel
               </SecondaryButton>
             </DialogClose>
             <PrimaryButton
               disabled={processing}
-              className='py-2 px-3 ml-3'
+              className='py-2 px-3'
             >
               {processing ? <>Processing...<UpdateIcon className='animate-spin ml-2' /></> : 'Create Order'}
             </PrimaryButton>

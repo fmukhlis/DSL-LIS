@@ -11,15 +11,7 @@ class Patient extends Model
 
     protected $fillable = [
         'reg_id',
-        'job',
         'name',
-        'gender',
-        'address',
-        'religion',
-        'date_of_birth',
-        'mother_s_name',
-        'place_of_birth',
-        'marriage_status',
     ];
 
     public $timestamps = false;

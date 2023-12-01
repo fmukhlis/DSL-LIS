@@ -22,12 +22,12 @@ class Order extends Model
         'registration_id',
     ];
 
-    protected $casts = ['confirmed_at' => 'datetime'];
-
-    public function tests()
-    {
-        return $this->belongsToMany(Test::class);
-    }
+    protected $casts = [
+        'validated_at' => 'datetime',
+        'confirmed_at' => 'datetime',
+        'inputted_at' => 'datetime',
+        'finished_at' => 'datetime',
+    ];
 
     public function analyst()
     {
@@ -42,6 +42,11 @@ class Order extends Model
     public function patient()
     {
         return $this->belongsTo(Patient::class);
+    }
+
+    public function results()
+    {
+        return $this->hasMany(Result::class);
     }
 
     public static function generateRegID()

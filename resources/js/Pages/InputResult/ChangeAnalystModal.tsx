@@ -8,7 +8,7 @@ import {
 import { useForm } from "@inertiajs/react"
 
 // Radix UI
-import { CheckIcon } from "@radix-ui/react-icons"
+import { CheckIcon, UpdateIcon } from "@radix-ui/react-icons"
 
 // Internal
 import PrimaryOutlineButton from "@/Components/PrimaryOutlineButton"
@@ -17,7 +17,6 @@ import Input from "@/Components/Input"
 import PrimaryButton from "@/Components/PrimaryButton"
 import SecondaryButton from "@/Components/SecondaryButton"
 import SearchableSelect from "@/Components/SearchableSelect"
-import { AnalystModelProps } from "@/Types"
 import {
     Dialog,
     DialogClose,
@@ -26,14 +25,18 @@ import {
     DialogTrigger,
 } from "@/Components/Dialog"
 
-const ConfirmOrderModal = ({ analysts, order_id }: {
-    analysts: AnalystModelProps[]
+const ChangeAnalystModal = ({ analysts, order_id }: {
+    analysts: {
+        _id: string
+        name: string
+        title: string
+    }[]
     order_id: string
 }) => {
 
-    const [analystOptions, setAnalystOption] = useState(() => analysts.map(analyst => ({
+    const [analystOptions, setAnalystOption] = useState(analysts.map(analyst => ({
         value: analyst._id,
-        label: analyst.name + ', ' + analyst.title,
+        label: `${analyst.name}${analyst.title ? `, ${analyst.title}` : ''}`,
     })))
 
     const { data, setData, errors, post, clearErrors, processing, transform, reset } = useForm<{
@@ -74,9 +77,9 @@ const ConfirmOrderModal = ({ analysts, order_id }: {
             onOpenChange={setIsOpen}
         >
             <DialogTrigger asChild>
-                <PrimaryOutlineButton className="px-3 py-2">
-                    Confirm
-                </PrimaryOutlineButton>
+                <SecondaryButton className="p-1 rounded-[50px]">
+                    <UpdateIcon />
+                </SecondaryButton>
             </DialogTrigger>
             <DialogContent className='w-[450px] overflow-hidden select-none'>
                 <form
@@ -91,7 +94,7 @@ const ConfirmOrderModal = ({ analysts, order_id }: {
                             shadow-[0px_0px_13px_7px_rgba(240,_253,_250,_1)]
                         "
                     >
-                        Confirm Order
+                        Change Analyst
                         <div className="rounded bg-teal-800 text-teal-50 ">
                             <CheckIcon width={20} height={20} />
                         </div>
@@ -107,10 +110,10 @@ const ConfirmOrderModal = ({ analysts, order_id }: {
                         <div className="flex gap-3 justify-between">
                             <SearchableSelect
                                 value={data.analyst}
-                                maxMenuHeight={100}
+                                maxMenuHeight={150}
                                 menuPosition="fixed"
                                 options={analystOptions}
-                                className="text-sm w-[230px]"
+                                className="w-full text-sm"
                                 placeholder="Select analyst..."
                                 noOptionsMessage={() => "Analyst not found"}
                                 onChange={(newValue) => {
@@ -127,7 +130,7 @@ const ConfirmOrderModal = ({ analysts, order_id }: {
                                 }}
                             />
                         </div>
-                        <div className="flex justify-end gap-3 mt-4">
+                        <div className="flex justify-end gap-3 mt-auto">
                             <DialogClose asChild>
                                 <SecondaryButton
                                     className="px-4 py-2"
@@ -149,4 +152,4 @@ const ConfirmOrderModal = ({ analysts, order_id }: {
     )
 }
 
-export default ConfirmOrderModal
+export default ChangeAnalystModal

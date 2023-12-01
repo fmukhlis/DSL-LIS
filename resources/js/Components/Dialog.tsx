@@ -21,7 +21,7 @@ export const DialogContent = forwardRef<HTMLDivElement, PrimitivesDialog.DialogC
                 <PrimitivesDialog.Content
                     {...props}
                     ref={forwardedRef}
-                    className={'z-50 max-h-[90vh] relative w-[90vw] max-w-[500px] rounded bg-teal-50 shadow outline-none ' + className}
+                    className={'relative max-h-[90vh] max-w-[80vw] rounded bg-teal-50 shadow outline-none ' + className}
                 >
                     {children}
                 </PrimitivesDialog.Content>

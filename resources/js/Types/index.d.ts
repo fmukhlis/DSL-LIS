@@ -24,38 +24,140 @@ import { TransitionFn } from "@react-spring/web"
 import { GroupBase } from "react-select"
 import type { } from "react-select/base"
 
-export interface TestOrderProps {
+
+
+
+export interface AnalystModelProps {
+    _id: string
+    name: string
+    title: string
+    pin: string
+    signature: string
+
+    orders?: OrderModelProps[]
+}
+
+export interface CategoryModelProps {
+    _id: string
+    name: string
+
+    tests?: TestModelProps[]
+}
+
+export interface ContactModelProps {
+    _id: string
+    contact: string
+    type: string
+    patient_ids: string[]
+
+    patients?: PatientModelProps[]
+}
+
+export interface DepartmentModelProps {
+    _id: string
+    name: string
+
+    doctors?: DoctorModelProps[]
+}
+
+export interface DoctorModelProps {
+    _id: string
+    name: string
+    department_id: string
+    specialization_ids: string[]
+    
+    department?: DepartmentModelProps
+    specializations?: SpecializationModelProps[]
+    orders?: OrderModelProps[]
+}
+
+export interface OrderModelProps {
+    _id: string
     is_cito: boolean
-    created_at: Date
+    payment_method: 'BPJS' | 'Self-Payment' | 'Insurance'
+    registration_id: string
+    updated_at: string
+    created_at: string
+    total_price: number
     doctor_id: string
     patient_id: string
-    confirmed_at : Date
-    registration_id: string
-    payment_method: 'BPJS' | 'Self-Payment' | 'Insurance'
+    results: ResultModelProps[] 
 
-    patient: {
-        _id: string
-        name: string
-    }
-    doctor: {
-        _id: string
-        name: string
-        specializations: {
-            _id: string
-            name: string
-            title: string
-            doctor_ids: string[]
-        }[]
-    }
-    tests: {
-        _id: string
-        name: string
-        category_id: string
-        is_manual: boolean
-        order_id: string[]
-        parameter_ids: string[]
-        price: number
+    note?: string
+    confirmed_at?: string
+    validated_at?: string
+    analyst_id?: string 
+    
+    patient?: PatientModelProps
+    doctor?: DoctorModelProps
+    analyst?: AnalystModelProps
+}
+
+export interface ParameterModelProps {
+    _id: string
+    name: string
+    test_ids: string[]
+
+    tests?: TestModelProps[]
+    units?: UnitModelProps[]
+}
+
+export interface PatientModelProps {
+    _id: string
+    reg_id: number
+    name: string
+    contact_ids: string[]
+
+    contacts: ContactModelProps[]
+    orders?: OrderModelProps[]
+}
+
+export interface ResultModelProps {
+    _id: string
+    test_id: string
+    updated_at: string
+    created_at: string
+    order_id: string
+    parameterValues: {
+        _id: { $oid: string }
+        value: number
+        parameter_id: string
     }[]
+
+    test?: TestModelProps
+    order?: OrderModelProps
+}
+
+export interface SpecializationModelProps {
+    _id: string
+    name: string
+    title: string
+    doctor_ids: string[]
+
+    doctors?: DoctorModelProps[] 
+}
+
+export interface TestModelProps {
+    _id: string
+    name: string
+    price: number
+    is_manual: boolean
+    category_id: string
+    parameter_ids: string[]
+
+    category?: CategoryModelProps    
+    parameters?: ParameterModelProps[]
+    results?: ResultModelProps[]
+}
+
+export interface UnitModelProps {
+    _id: string
+    name: string
+    min_abnormal: number
+    max_abnormal: number    
+    parameter_id: string
+
+    parameter: ParameterModelProps
 }
 
 export interface InputResultProps {
@@ -116,4 +218,68 @@ export interface NavigationMenuDropdownProps extends DMTriggerProps {
 
 export interface InputProps extends ComponentPropsWithRef<'input'> {
     isFocused? : boolean
+}
+
+export interface SingleOrderProps {
+    registration_id: string
+    created_at: string
+    confirmed_at?: string
+    is_cito: boolean
+    payment_method: 'BPJS' | 'Self-Payment' | 'Insurance'
+    note: string
+    total_price: number
+
+    analyst: {
+        name: string
+        title: string
+    }
+
+    patient: {
+        name: string
+        reg_id: string
+        contacts: {
+            _id: string
+            contact: string
+            type: string
+        }[]
+    }
+
+    doctor: {
+        name: string,
+        specializations: {
+            _id: string
+            title: string
+        }[],
+        department: {
+            name: string
+        }
+    }
+
+    tests: {
+        _id: string
+        name: string
+        price: number
+        is_manual: boolean
+        parameters: {
+            _id: string
+            name: string
+            units: {
+                name: string
+                max_abnormal: number
+                min_abnormal: number
+            }[]
+        }[]
+    }[]
+
+    results: {
+        _id: string
+        created_at: string
+        updated_at: string
+        test_id: string
+        parameterValues: {
+            _id: { $oid: string }
+            parameter_id: string
+            value: number
+        }
+    }[]
 }

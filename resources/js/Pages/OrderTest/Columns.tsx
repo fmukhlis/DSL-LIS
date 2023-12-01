@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-table";
 
 // Internal
-import { TestOrderProps } from '@/Types'
+import { OrderModelProps } from '@/Types'
 import PrimaryButton from "@/Components/PrimaryButton";
 import {
     CheckCircledIcon,
@@ -23,7 +23,7 @@ const dateTimeConfig: Intl.DateTimeFormatOptions = {
     minute: '2-digit',
 }
 
-export const columns: ColumnDef<TestOrderProps>[] = [
+export const columns: ColumnDef<OrderModelProps>[] = [
     {
         id: 'more',
         enableGlobalFilter: false,
@@ -77,7 +77,7 @@ export const columns: ColumnDef<TestOrderProps>[] = [
     {
         accessorKey: 'patient',
         enableGlobalFilter: true,
-        accessorFn: row => `${row.patient.name}`,
+        accessorFn: row => `${row.patient!.name}`,
         header: () => {
             return (
                 <div>Patient</div>
@@ -102,7 +102,7 @@ export const columns: ColumnDef<TestOrderProps>[] = [
     {
         accessorKey: 'doctor',
         enableGlobalFilter: true,
-        accessorFn: row => `Dr. ${row.doctor.name}, ${row.doctor.specializations.map(specialization => specialization.title)}`,
+        accessorFn: row => `Dr. ${row.doctor!.name}, ${row.doctor!.specializations!.map(specialization => specialization.title)}`,
         header: () => {
             return (
                 <div>Referring Physician</div>
