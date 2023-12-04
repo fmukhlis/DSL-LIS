@@ -171,6 +171,7 @@ const CreateOrderModal = ({
                 <SearchableAsyncSelect
                   maxMenuHeight={180}
                   value={data.patient}
+                  menuPosition='fixed'
                   className="w-1/2 text-sm"
                   loadOptions={loadOptions}
                   placeholder='Select patient...'

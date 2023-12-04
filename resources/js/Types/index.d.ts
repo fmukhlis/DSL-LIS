@@ -85,6 +85,7 @@ export interface OrderModelProps {
 
     note?: string
     confirmed_at?: string
+    inputted_at?: string
     validated_at?: string
     analyst_id?: string 
     

@@ -1,36 +1,23 @@
-import React, {
-    useEffect,
-    useState,
-} from 'react'
-
-// Internal
-import Input from '@/Components/Input'
-import PrimaryButton from '@/Components/PrimaryButton'
-import {
-    DataTableProps,
-    InputResultProps,
-    OrderModelProps,
-} from "@/Types"
-import {
-    Select,
-    SelectItem
-} from '@/Components/Select'
+import { Fragment, useState, useEffect } from 'react'
 
 // Radix UI
-import * as PrimitivesToggleGroup from '@radix-ui/react-toggle-group'
 import * as PrimitivesSeparator from '@radix-ui/react-separator'
 import {
     ArrowRightIcon,
     CaretSortIcon,
     CheckIcon,
-    Cross2Icon,
     ThickArrowLeftIcon,
     ThickArrowRightIcon,
     UpdateIcon
 } from '@radix-ui/react-icons'
 
-// TanStack Table
-import { rankItem } from '@tanstack/match-sorter-utils'
+// Internal
+import Input from "@/Components/Input"
+import { Select, SelectItem } from '@/Components/Select'
+import PrimaryButton from '@/Components/PrimaryButton'
+import { DataTableProps, OrderModelProps } from '@/Types'
+
+// Tanstack Table
 import {
     FilterFn,
     flexRender,
@@ -42,7 +29,8 @@ import {
     getFilteredRowModel,
     getExpandedRowModel,
     getPaginationRowModel,
-} from "@tanstack/react-table"
+} from '@tanstack/react-table'
+import { rankItem } from '@tanstack/match-sorter-utils'
 
 export default function DataTable({
     data,
@@ -52,7 +40,7 @@ export default function DataTable({
     renderSubComponent,
 }: DataTableProps<OrderModelProps>) {
 
-    const [datetimeColumnToBeFiltered, setDatetimeColumnToBeFiltered] = useState('confirmed_at')
+    const [datetimeColumnToBeFiltered, setDatetimeColumnToBeFiltered] = useState('inputted_at')
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [globalFilter, setGlobalFilter] = useState('')
@@ -89,6 +77,10 @@ export default function DataTable({
     useEffect(() => {
         table.setPageSize(Number(rowCount))
     }, [rowCount])
+
+    useEffect(() => {
+        table.getColumn('inputted_at')?.toggleSorting(table.getColumn('inputted_at')?.getIsSorted() === 'asc')
+    }, [])
 
     return (
         <div>
@@ -128,7 +120,7 @@ export default function DataTable({
                                     value={column.id}
                                 >
                                     {
-                                        column.id === 'confirmed_at' ? 'Confirmed at' : 'Ordered at'
+                                        column.id === 'inputted_at' ? 'Inputted at' : 'Ordered at'
                                     }
                                 </SelectItem>
                             ))
@@ -181,7 +173,7 @@ export default function DataTable({
 
                 <PrimaryButton
                     onClick={() => {
-                        table.getColumn('confirmed_at')?.toggleSorting(table.getColumn('confirmed_at')?.getIsSorted() === 'asc')
+                        table.getColumn('inputted_at')?.toggleSorting(table.getColumn('inputted_at')?.getIsSorted() === 'asc')
                     }}
                 >
                     <CaretSortIcon width={19} height={19} />
@@ -246,7 +238,7 @@ export default function DataTable({
                                     ? (
                                         table.getRowModel().rows.map(row => {
                                             return (
-                                                <React.Fragment key={row.id}>
+                                                <Fragment key={row.id}>
                                                     <tr className={`bg-teal-${!row.getIsExpanded() ? '100 border-b' : '200'} border-teal-300 hover:bg-teal-200 duration-75`}>
                                                         {row.getVisibleCells().map(cell => (
                                                             <td key={cell.id} className="px-3.5 py-1.5">
@@ -264,7 +256,7 @@ export default function DataTable({
                                                             </td>
                                                         </tr>
                                                     }
-                                                </React.Fragment>
+                                                </Fragment>
                                             )
                                         })
                                     ) : (

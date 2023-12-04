@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\ValidateResultController;
 use App\Models\Category;
 use App\Models\Doctor;
 use App\Models\Order;
@@ -61,10 +62,6 @@ Route::get('/dashboard', function () {
 
 
 
-Route::get('/validate-result', function () {
-    return Inertia::render('ValidateResult/ValidateResult');
-})->middleware(['auth', 'verified'])->name('validateresult');
-
 Route::get('/test-result', function () {
     return Inertia::render('TestResult/TestResult');
 })->middleware(['auth', 'verified'])->name('testresult');
@@ -85,21 +82,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::controller(OrderTestController::class)
                 ->group(function () {
                     Route::get('/', 'index')->name('order.test');
-                    Route::get('/api', function () {
-                        $data = Order::whereNull('confirmed_at')
-                            ->with([
-                                'results' => ['test'],
-                                'patient',
-                                'doctor' => ['specializations']
-                            ])->get();
-
-                        return response()->json($data);
-                    })->name('get.created.orders');
                     Route::get('/details/{order:registration_id}', 'detail')->name('order.detail');
 
                     Route::post('/', 'store');
                     Route::post('/details/{order:registration_id}', 'confirm');
                 });
+
+            Route::get('/api', function () {
+                $data = Order::whereNull('confirmed_at')
+                    ->with([
+                        'results' => ['test'],
+                        'patient',
+                        'doctor' => ['specializations']
+                    ])->get();
+
+                return response()->json($data);
+            })->name('get.created.orders');
         });
 
     Route::prefix('/input-result')
@@ -111,20 +109,29 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
                     Route::post('/details/{order:registration_id}', 'store');
                     Route::post('/proceed/{order:registration_id}', 'proceed')->name('input.result.proceed');
+                });
 
-                    Route::get('/api', function () {
-                        $data = Order::whereNotNull('confirmed_at')
-                            ->whereNull('inputted_at')
-                            ->with([
-                                'results' => ['test'],
-                                'patient',
-                                'analyst',
-                            ])->get();
+            Route::get('/api', function () {
+                $data = Order::whereNotNull('confirmed_at')
+                    ->whereNull('inputted_at')
+                    ->with([
+                        'results' => ['test'],
+                        'patient',
+                        'analyst',
+                    ])->get();
 
-                        return response()->json($data);
-                    })->name('get.confirmed.orders');
+                return response()->json($data);
+            })->name('get.confirmed.orders');
+        });
+
+    Route::prefix('/validate-result')
+        ->group(function () {
+            Route::controller(ValidateResultController::class)
+                ->group(function () {
+                    Route::get('/', 'index')->name('validate.result');
                 });
         });
+
 
     Route::prefix('/settings/master-data')
         ->group(function () {

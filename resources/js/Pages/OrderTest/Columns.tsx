@@ -7,6 +7,8 @@ import {
 // Internal
 import { OrderModelProps } from '@/Types'
 import PrimaryButton from "@/Components/PrimaryButton";
+
+// Radix UI
 import {
     CheckCircledIcon,
     Cross2Icon,
@@ -57,7 +59,6 @@ export const columns: ColumnDef<OrderModelProps>[] = [
                     }
                 </div>
             )
-
         }
     },
     {
