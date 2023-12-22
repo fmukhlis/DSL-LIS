@@ -87,17 +87,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     Route::post('/', 'store');
                     Route::post('/details/{order:registration_id}', 'confirm');
                 });
-
-            Route::get('/api', function () {
-                $data = Order::whereNull('confirmed_at')
-                    ->with([
-                        'results' => ['test'],
-                        'patient',
-                        'doctor' => ['specializations']
-                    ])->get();
-
-                return response()->json($data);
-            })->name('get.created.orders');
         });
 
     Route::prefix('/input-result')
@@ -129,7 +118,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::controller(ValidateResultController::class)
                 ->group(function () {
                     Route::get('/', 'index')->name('validate.result');
+                    Route::get('/details/{order:registration_id}', 'detail')->name('validate.result.detail');
+                    Route::post('/details/{order:registration_id}', 'store');
                 });
+            Route::get('/api', function () {
+                $data = Order::whereNotNull('inputted_at')
+                    ->whereNull('validated_at')
+                    ->with([
+                        'results' => ['test'],
+                        'patient',
+                        'analyst',
+                    ])->get();
+
+                return response()->json($data);
+            })->name('get.inputted.orders');
         });
 
 

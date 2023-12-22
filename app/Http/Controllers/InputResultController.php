@@ -86,11 +86,12 @@ class InputResultController extends Controller
         }
 
         $order->inputted_at = now();
+        $order->status = 'waiting_for_validation';
         $order->save();
 
         return redirect()->route('input.result')->with(
             'operationResponse',
             'The order with ID: ' . $order->registration_id . ' has been inputted by ' . $order->analyst->name
-        );;
+        );
     }
 }

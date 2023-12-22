@@ -63,11 +63,9 @@ export interface DepartmentModelProps {
 export interface DoctorModelProps {
     _id: string
     name: string
-    department_id: string
-    specialization_ids: string[]
     
-    department?: DepartmentModelProps
-    specializations?: SpecializationModelProps[]
+    department?: string
+    institution?: string
     orders?: OrderModelProps[]
 }
 
@@ -82,13 +80,14 @@ export interface OrderModelProps {
     doctor_id: string
     patient_id: string
     results: ResultModelProps[] 
+    status: 'need_confirmation' | 'input_process' | 'invalid' | 'valid' | 'finished'
 
     note?: string
     confirmed_at?: string
     inputted_at?: string
     validated_at?: string
     analyst_id?: string 
-    
+
     patient?: PatientModelProps
     doctor?: DoctorModelProps
     analyst?: AnalystModelProps
@@ -125,6 +124,9 @@ export interface ResultModelProps {
         parameter_id: string
     }[]
 
+    feedback_type?: 'approve' | 'disapprove'
+    feedback_comment?: string
+    
     test?: TestModelProps
     order?: OrderModelProps
 }

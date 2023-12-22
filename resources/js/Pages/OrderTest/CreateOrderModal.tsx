@@ -32,104 +32,34 @@ import {
   CategoryModelProps,
   DoctorModelProps,
 } from '@/Types'
+import useCreateOrderModal from './Hooks/useCreateOrderModal'
+import Input from '@/Components/Input'
+import CreateableSearchableSelect from '@/Components/CreateableSearchableSelect'
 
-const CreateOrderModal = ({
-  doctors,
-  categories,
-}: {
-  doctors: DoctorModelProps[]
+const CreateOrderModal = ({ categories, externalDoctors }: {
   categories: CategoryModelProps[]
+  externalDoctors: DoctorModelProps[]
 }) => {
 
-  const doctorOptions = doctors !== undefined
-    ? doctors.map(doctor => ({
-      value: doctor._id,
-      label: `Dr. ${doctor.name},${doctor.specializations!.map(specialization => ` ${specialization.title}`)}`,
-    }))
-    : []
-
-  const { data, setData, errors, clearErrors, reset, processing, post, transform } = useForm<{
-    note: string
-    tests: unknown[]
-    is_cito: boolean
-    patient: Record<string, unknown> | null
-    doctor: Record<string, unknown> | null | string
-    payment_method: 'BPJS' | 'Insurance' | 'Self-Payment' | ''
-  }>({
-    note: '',
-    tests: [],
-    doctor: null,
-    patient: null,
-    is_cito: false,
-    payment_method: ''
-  })
-
-  transform((data) => ({
-    ...data,
-    doctor: data.doctor ? (data.doctor as Record<string, string>).value : null,
-    patient: data.patient ? data.patient.value as Record<string, unknown> : null,
-    tests: data.tests.map(dataTest => (dataTest as Record<string, unknown>)._id),
-  }))
-
-  const [isOpen, setIsOpen] = useState(false)
-
-  let typingTimeout: ReturnType<typeof setTimeout>
-
-  const loadOptions = (inputValue: string) => {
-    return new Promise<{
-      value: Record<string, string>,
-      label: string,
-    }[]>((resolve) => {
-      if (typingTimeout) {
-        clearTimeout(typingTimeout)
-      }
-      typingTimeout = setTimeout(async () => {
-        try {
-          const response = await fetch('https://reqres.in/api/users')
-          if (!response.ok) {
-            throw new Error(`Http error. (${response.status})`)
-          }
-          const data: {
-            value: Record<string, string>,
-            label: string,
-          }[] = (await response.json()).data.map((item: Record<string, string>) => ({
-            value: item,
-            label: item.first_name,
-          }))
-          resolve(data.filter((i) => i.label.toLowerCase().includes(inputValue.toLowerCase())))
-        } catch (error) {
-          console.log(error)
-        }
-      }, 500)
-    })
-  }
-
-  const submitForm = (e: FormEvent) => {
-    e.preventDefault()
-    clearErrors()
-    post(
-      route('order.test'),
-      {
-        onSuccess: () => {
-          setIsOpen(false)
-        }
-      }
-    )
-  }
-
-  useEffect(() => {
-    setData(
-      'payment_method',
-      ['BPJS', 'Insurance', 'Self-Payment'][Math.floor(Math.random() * 3)] as 'BPJS' | 'Insurance' | 'Self-Payment'
-    )
-  }, [data.patient])
-
-  useEffect(() => {
-    if (!isOpen) {
-      reset()
-      clearErrors()
-    }
-  }, [isOpen])
+  const {
+    data,
+    errors,
+    externalDoctorOptions,
+    handleCITOCheckboxInput,
+    handleInstitutionTextInput,
+    handleNoteTextInput,
+    handleTestsCheckboxInput,
+    isExternal,
+    isOpen,
+    loadPatients,
+    loadDoctors,
+    processing,
+    selectDoctor,
+    selectExternalDoctor,
+    selectPatient,
+    setIsOpen,
+    submitForm,
+  } = useCreateOrderModal({ categories, externalDoctors })
 
   return (
     <Dialog
@@ -167,27 +97,58 @@ const CreateOrderModal = ({
             {errors.payment_method && <Alert formID={0} message={errors.payment_method} type='error' />}
 
             <div className="flex flex-col gap-2 ">
-              <div className="flex justify-between gap-3">
-                <SearchableAsyncSelect
-                  maxMenuHeight={180}
-                  value={data.patient}
-                  menuPosition='fixed'
-                  className="w-1/2 text-sm"
-                  loadOptions={loadOptions}
-                  placeholder='Select patient...'
-                  noOptionsMessage={() => "Patient not found"}
-                  onChange={(newValue) => { setData('patient', newValue as Record<string, string> | null) }}
-                />
-                <SearchableSelect
-                  maxMenuHeight={180}
-                  value={data.doctor}
-                  menuPosition='fixed'
-                  options={doctorOptions}
-                  className="w-1/2 text-sm"
-                  placeholder='Select doctor...'
-                  noOptionsMessage={() => "Doctor not found"}
-                  onChange={(newValue) => { setData('doctor', newValue as Record<string, string> | null) }}
-                />
+              <div className='flex flex-col gap-2'>
+                <div className="flex justify-between gap-2">
+                  <SearchableAsyncSelect
+                    value={data.patient ? { value: data.patient, label: data.patient.name } : null}
+                    maxMenuHeight={180}
+                    menuPosition='fixed'
+                    className="w-2/5 text-sm"
+                    loadOptions={loadPatients}
+                    placeholder='Select patient...'
+                    noOptionsMessage={() => "Patient not found"}
+                    onChange={newValue => {
+                      selectPatient(newValue)
+                    }}
+                  />
+                  <SearchableAsyncSelect
+                    maxMenuHeight={180}
+                    value={data.doctor ? {
+                      value: data.doctor,
+                      label: data.doctor.name
+                    } : null}
+                    menuPosition='fixed'
+                    loadOptions={loadDoctors}
+                    className="w-3/5 text-sm"
+                    placeholder='Select doctor...'
+                    noOptionsMessage={() => "Doctor not found"}
+                    onChange={(newValue) => {
+                      selectDoctor(newValue)
+                    }}
+                  />
+                </div>
+                {
+                  isExternal &&
+                  <div className='flex justify-between gap-2'>
+                    <CreateableSearchableSelect
+                      className='text-sm w-3/5'
+                      isClearable
+                      options={externalDoctorOptions}
+                      placeholder="Doctor name..."
+                      onChange={(newValue, actionMeta) => {
+                        selectExternalDoctor(newValue, actionMeta)
+                      }}
+                    />
+                    <Input
+                      className='w-2/5'
+                      value={data.externalDoctor.department}
+                      onChange={(e) => {
+                        handleInstitutionTextInput(e.target.value)
+                      }}
+                      placeholder='Institution name...'
+                    />
+                  </div>
+                }
               </div>
 
               {
@@ -232,13 +193,9 @@ const CreateOrderModal = ({
                                 className="flex items-center gap-2 shrink-0 grow-0 basis-1/2"
                               >
                                 <Checkbox
-                                  checked={data.tests.some(dataTest => (dataTest as Record<string, unknown>)._id === test._id)}
+                                  checked={data.tests.some(dataTest => dataTest._id === test._id)}
                                   onChange={(e) => {
-                                    if (e.target.checked) {
-                                      setData('tests', [...data.tests as Record<string, unknown>[], test])
-                                    } else {
-                                      setData('tests', (data.tests as Record<string, unknown>[]).filter(dataTest => dataTest._id !== test._id))
-                                    }
+                                    handleTestsCheckboxInput(test, e.target.checked)
                                   }}
                                 />
                                 <span>{test.name as string}</span>
@@ -256,21 +213,7 @@ const CreateOrderModal = ({
               }
             </div>
 
-            <Select
-              disabled
-              value={data.payment_method}
-              placeholder='Select payment method...'
-              triggerProps={{
-                className: `px-2 py-1 w-28 ml-auto w-full py-2 bg-white border-gray-300 ${data.payment_method !== '' ? 'text-black' : 'text-gray-500'}`
-              }}
-              onValueChange={(value: '' | 'BPJS' | 'Insurance' | 'Self-Payment') => {
-                setData('payment_method', value)
-              }}
-            >
-              <SelectItem value='BPJS'>BPJS</SelectItem>
-              <SelectItem value='Insurance'>Insurance</SelectItem>
-              <SelectItem value='Self-Payment'>Self-Payment</SelectItem>
-            </Select>
+            <Input className='bg-gray-100 shadow-none text-gray-400' disabled value={data.payment_method ? data.payment_method : 'Payment method'} />
 
             <div className="flex flex-col text-sm">
               <div className="font-bold text-base text-teal-50 flex justify-between bg-teal-800 rounded-sm px-2 py-1">
@@ -279,7 +222,7 @@ const CreateOrderModal = ({
                 </div>
                 <label className="flex items-center gap-2 text-xs rounded-sm">
                   <span className=''>Mark as <i>CITO</i></span>
-                  <Checkbox checked={data.is_cito} onChange={(e) => { setData('is_cito', e.target.checked) }} />
+                  <Checkbox checked={data.is_cito} onChange={(e) => { handleCITOCheckboxInput(e.target.checked) }} />
                 </label>
               </div>
               {
@@ -288,11 +231,11 @@ const CreateOrderModal = ({
                     <div className='px-2.5 pb-2.5 pt-1.5 bg-white'>
                       {data.tests.map(test => (
                         <div
-                          key={(test as Record<string, unknown>)._id as string}
+                          key={test._id}
                           className="flex gap-1 items-center justify-between"
                         >
-                          <div>{(test as Record<string, unknown>).name as string}</div>
-                          <div className='font-bold'>{((test as Record<string, unknown>).price as number).toLocaleString('id-ID', {
+                          <div>{test.name}</div>
+                          <div className='font-bold'>{test.price.toLocaleString('id-ID', {
                             style: 'currency',
                             currency: 'IDR',
                             maximumFractionDigits: 0,
@@ -311,31 +254,28 @@ const CreateOrderModal = ({
               value={data.note}
               placeholder="Add note..."
               className="w-full resize-none"
-              onChange={(e) => { setData('note', e.target.value) }}
+              onChange={(e) => { handleNoteTextInput(e.target.value) }}
             />
           </div>
 
           <div className='flex items-center px-6 py-3 gap-3 shadow-[0px_0px_13px_7px_rgba(240,_253,_250,_1)] mt-auto'>
             {
-              data.tests.length
-                ? (
-                  <div className='font-bold text-[1.05rem] flex gap-1 text-teal-800 mr-auto'>
-                    Total {(data.tests as Record<string, unknown>[])
-                      .reduce((accumulator, dataTest) => (
-                        accumulator + ((dataTest as Record<string, unknown>).price as number)
-                      ), 0)
-                      .toLocaleString('id-ID', {
-                        style: 'currency',
-                        currency: 'IDR',
-                        maximumFractionDigits: 0,
-                      })
-                    }
-                  </div>
-                ) : null
+              data.tests.length > 0 &&
+              <div className='font-bold text-[1.05rem] flex gap-1 text-teal-800'>
+                Total {data.tests.reduce((accumulator, dataTest) => (
+                  accumulator + (dataTest.price)
+                ), 0)
+                  .toLocaleString('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    maximumFractionDigits: 0,
+                  })
+                }
+              </div>
             }
             <DialogClose aria-label="Close" asChild>
               <SecondaryButton
-                className='py-2 px-3'
+                className='py-2 px-3 ml-auto'
               >
                 Cancel
               </SecondaryButton>

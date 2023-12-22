@@ -40,11 +40,6 @@ const InputResultDetailModal = ({ order_id, result }: {
         result: result.parameterValues.map(({ _id, ...parameterValue }) => ({ ...parameterValue }))
     })
 
-    // transform((data) => ({
-    //     ...data,
-    //     analyst: data.analyst ? (data.analyst as Record<string, unknown>).value as string : null
-    // }))
-
     const submitForm = (e: FormEvent) => {
         e.preventDefault()
         clearErrors()

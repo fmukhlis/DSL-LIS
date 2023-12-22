@@ -4,7 +4,7 @@ import {
 
 // Radix UI
 import * as PrimitivesAccordion from '@radix-ui/react-accordion'
-import { TriangleDownIcon } from '@radix-ui/react-icons'
+import { ThickArrowRightIcon, TriangleDownIcon } from '@radix-ui/react-icons'
 
 export const AccordionRoot = PrimitivesAccordion.Root
 
@@ -15,7 +15,7 @@ export const AccordionItem = forwardRef<HTMLDivElement, PrimitivesAccordion.Acco
                 {...props}
                 ref={forwardedRef}
                 className={`
-                    overflow-hidden bg-teal-300
+                    overflow-hidden 
                     ${className}
                 `}
             >
@@ -37,7 +37,10 @@ export const AccordionTrigger = forwardRef<HTMLButtonElement, PrimitivesAccordio
                         ${className}
                     `}
                 >
-                    {children}
+                    <div className='flex items-center'>
+                        <ThickArrowRightIcon className='duration-300 group-focus:w-6 mr-1 w-0' />
+                        {children}
+                    </div>
                     <TriangleDownIcon
                         width={17}
                         height={17}

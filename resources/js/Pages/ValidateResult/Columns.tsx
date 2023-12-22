@@ -27,7 +27,6 @@ export const columns: ColumnDef<OrderModelProps>[] = [
         id: 'more',
         enableGlobalFilter: false,
         header: (headerContext) => {
-            console.log('(Debug-ValidateResult/Columns.tsx) headerContext@1stColumn: ' + headerContext)
             return (
                 <div className="flex items-center justify-center">
                     <PrimaryButton
@@ -44,7 +43,6 @@ export const columns: ColumnDef<OrderModelProps>[] = [
             )
         },
         cell: (cellContext) => {
-            console.log('(Debug-ValidateResult/Columns.tsx) cellContext@1stColumn: ' + cellContext)
             return (
                 <div className="flex items-center justify-center">
                     {
@@ -66,13 +64,11 @@ export const columns: ColumnDef<OrderModelProps>[] = [
         accessorKey: 'registration_id',
         enableGlobalFilter: true,
         header: (headerContext) => {
-            console.log('(Debug-ValidateResult/Columns.tsx) headerContext@2ndColumn: ' + headerContext)
             return (
                 <div>Reg. ID</div>
             )
         },
         cell: (cellContext) => {
-            console.log('(Debug-ValidateResult/Columns.tsx) cellContext@2ndColumn: ' + cellContext)
             return (
                 <div>{cellContext.getValue<string>()}</div>
             )
@@ -82,13 +78,11 @@ export const columns: ColumnDef<OrderModelProps>[] = [
         accessorKey: 'patient',
         enableGlobalFilter: true,
         accessorFn: (row) => {
-            console.log('(Debug-ValidateResult/Columns.tsx) row@3rdColumn: ' + row)
             return (
                 `${row.patient!.name}`
             )
         },
         header: (headerContext) => {
-            console.log('(Debug-ValidateResult/Columns.tsx) headerContext@3rdColumn: ' + headerContext)
             return (
                 <div>Patient</div>
             )
@@ -98,13 +92,11 @@ export const columns: ColumnDef<OrderModelProps>[] = [
         accessorKey: 'analyst',
         enableGlobalFilter: true,
         accessorFn: (row) => {
-            console.log('(Debug-ValidateResult/Columns.tsx) row@4thColumn: ' + row)
             return (
                 `${row.analyst!.name}, ${row.analyst!.title}`
             )
         },
         header: (headerContext) => {
-            console.log('(Debug-ValidateResult/Columns.tsx) headerContext@4thColumn: ' + headerContext)
             return (
                 <div>Confirming Analyst</div>
             )
@@ -114,13 +106,11 @@ export const columns: ColumnDef<OrderModelProps>[] = [
         accessorKey: 'is_cito',
         enableGlobalFilter: false,
         header: (headerContext) => {
-            console.log('(Debug-ValidateResult/Columns.tsx) headerContext@5thColumn: ' + headerContext)
             return (
                 <div>CITO</div>
             )
         },
         cell: (cellContext) => {
-            console.log('(Debug-ValidateResult/Columns.tsx) cellContext@5thColumn: ' + cellContext)
             return (
                 <div>
                     {
@@ -138,13 +128,11 @@ export const columns: ColumnDef<OrderModelProps>[] = [
         filterFn: 'filterByDate' as FilterFnOption<any>,
         sortingFn: 'datetime',
         header: (headerContext) => {
-            console.log('(Debug-ValidateResult/Columns.tsx) headerContext@6thColumn: ' + headerContext)
             return (
                 <div>Ordered At</div>
             )
         },
         cell: (cellContext) => {
-            console.log('(Debug-ValidateResult/Columns.tsx) cellContext@6thColumn: ' + cellContext)
             return (
                 <div>
                     {new Date(cellContext.getValue<string>()).toLocaleDateString('en-GB', dateTimeConfig)}
@@ -158,15 +146,11 @@ export const columns: ColumnDef<OrderModelProps>[] = [
         filterFn: 'filterByDate' as FilterFnOption<any>,
         sortingFn: 'datetime',
         header: (headerContext) => {
-            console.log('(Debug-ValidateResult/Columns.tsx) headerContext@7thColumn: ')
-            console.log(headerContext)
             return (
                 <div>Inputted At</div>
             )
         },
         cell: (cellContext) => {
-            console.log('(Debug-ValidateResult/Columns.tsx) cellContext@6thColumn: ')
-            console.log(cellContext)
             return (
                 <div>
                     {new Date(cellContext.getValue<string>()).toLocaleDateString('en-GB', dateTimeConfig)}

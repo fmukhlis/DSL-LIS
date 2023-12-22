@@ -103,7 +103,7 @@ export const columns: ColumnDef<OrderModelProps>[] = [
     {
         accessorKey: 'doctor',
         enableGlobalFilter: true,
-        accessorFn: row => `Dr. ${row.doctor!.name}, ${row.doctor!.specializations!.map(specialization => specialization.title)}`,
+        accessorFn: row => row.doctor?.name,
         header: () => {
             return (
                 <div>Referring Physician</div>

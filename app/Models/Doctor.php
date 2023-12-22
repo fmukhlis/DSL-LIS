@@ -11,19 +11,11 @@ class Doctor extends Model
 
     protected $fillable = [
         'name',
+        'department',
+        'institution',
     ];
 
     public $timestamps = false;
-
-    public function department()
-    {
-        return $this->belongsTo(Department::class);
-    }
-
-    public function specializations()
-    {
-        return $this->belongsToMany(Specialization::class);
-    }
 
     public function orders()
     {

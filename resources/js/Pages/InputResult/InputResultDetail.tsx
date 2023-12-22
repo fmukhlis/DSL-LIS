@@ -80,7 +80,7 @@ const InputResultDetail = ({ order, analysts }: {
                                 <span className="font-bold">{parameterValue.value} {relatedParam!.units![0].name}</span>
                                 <PrimaryOutlineButton
                                     disabled={!(relatedParam!.units!.length > 1)}
-                                    className="bg-transparent border-0 rounded-[50px] p-0.5 text-teal-700"
+                                    className="bg-transparent border-transparent rounded-[100px] p-0.5 text-teal-700"
                                 >
                                     <UpdateIcon width={13} height={13} />
                                 </PrimaryOutlineButton>
@@ -109,7 +109,7 @@ const InputResultDetail = ({ order, analysts }: {
                             className="px-3 py-2 flex items-center gap-2"
                             disabled={order.results.find(result => (
                                 result.parameterValues.find(parameterValue => parameterValue.value === 0) !== undefined
-                            )) !== undefined}
+                            )) !== undefined || processing}
                         >
                             Proceed
                         </PrimaryOutlineButton>
@@ -213,7 +213,7 @@ const InputResultDetail = ({ order, analysts }: {
 
                 <div className="flex max-w-6xl w-full mx-auto text-sm px-2.5 items-center justify-between text-gray-500">
                     <div className="flex gap-3 items-center">
-                        <span>Confirming Analyst :</span>
+                        <span>Analyst in Charge :</span>
                         <span className="font-bold">{order.analyst!.name}, {order.analyst!.title}</span>
                         <ChangeAnalystModal order_id={order.registration_id} analysts={analysts} />
                     </div>

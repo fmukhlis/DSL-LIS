@@ -1,22 +1,14 @@
-import {
-    useState,
-    FormEvent,
-    useEffect
-} from "react"
-
-// Inertia JS
-import { useForm } from "@inertiajs/react"
-
 // Radix UI
 import { CheckIcon, UpdateIcon } from "@radix-ui/react-icons"
 
 // Internal
-import PrimaryOutlineButton from "@/Components/PrimaryOutlineButton"
 import Alert from "@/Components/Alert"
 import Input from "@/Components/Input"
+import { AnalystModelProps } from "@/Types"
 import PrimaryButton from "@/Components/PrimaryButton"
 import SecondaryButton from "@/Components/SecondaryButton"
 import SearchableSelect from "@/Components/SearchableSelect"
+import useChangeAnalystModal from "../Hooks/useChangeAnalystModal"
 import {
     Dialog,
     DialogClose,
@@ -26,50 +18,20 @@ import {
 } from "@/Components/Dialog"
 
 const ChangeAnalystModal = ({ analysts, order_id }: {
-    analysts: {
-        _id: string
-        name: string
-        title: string
-    }[]
+    analysts: AnalystModelProps[]
     order_id: string
 }) => {
 
-    const [analystOptions, setAnalystOption] = useState(analysts.map(analyst => ({
-        value: analyst._id,
-        label: `${analyst.name}${analyst.title ? `, ${analyst.title}` : ''}`,
-    })))
-
-    const { data, setData, errors, post, clearErrors, processing, transform, reset } = useForm<{
-        pin: string
-        analyst: Record<string, unknown> | string | null
-    }>({
-        analyst: null,
-        pin: '',
-    })
-
-    transform((data) => ({
-        ...data,
-        analyst: data.analyst ? (data.analyst as Record<string, unknown>).value as string : null
-    }))
-
-    const submitForm = (e: FormEvent) => {
-        e.preventDefault()
-        clearErrors()
-        post(route('order.detail', { order: order_id }), {
-            onSuccess: () => {
-                setIsOpen(false)
-            }
-        })
-    }
-
-    const [isOpen, setIsOpen] = useState(false)
-
-    useEffect(() => {
-        if (!isOpen) {
-            reset()
-            clearErrors()
-        }
-    }, [isOpen])
+    const {
+        data,
+        errors,
+        isOpen,
+        setData,
+        setIsOpen,
+        processing,
+        submitForm,
+        analystOptions,
+    } = useChangeAnalystModal(analysts, order_id)
 
     return (
         <Dialog
@@ -117,7 +79,7 @@ const ChangeAnalystModal = ({ analysts, order_id }: {
                                 placeholder="Select analyst..."
                                 noOptionsMessage={() => "Analyst not found"}
                                 onChange={(newValue) => {
-                                    setData('analyst', newValue as Record<string, unknown>)
+                                    setData('analyst', newValue)
                                 }}
                             />
                             <Input

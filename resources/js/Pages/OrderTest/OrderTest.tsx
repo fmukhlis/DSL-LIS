@@ -25,30 +25,17 @@ import {
 } from "@/Types"
 import { CheckCircledIcon, UpdateIcon } from "@radix-ui/react-icons"
 import { Toast, ToastProvider, ToastTitle, ToastViewport } from "@/Components/Toast"
+import useOrderTest from "./Hooks/useOrderTest"
 
 // const defaultData: TestOrderProps[] = generateOrderData(10)
 
-const OrderTest = ({ orders, doctors, categories }: {
-  orders: OrderModelProps[]
-  doctors: DoctorModelProps[]
+const OrderTest = ({ categories, externalDoctors, orders }: {
   categories: CategoryModelProps[]
+  externalDoctors: DoctorModelProps[]
+  orders: OrderModelProps[]
 }) => {
-  const [data, setData] = useState(() => orders.filter(order => order.confirmed_at === undefined))
-  const [isLoading, setIsLoading] = useState(false)
-  const savedRef = useRef<{ publish: () => void }>(null)
 
-  const { flash } = usePage<{
-    flash: {
-      operationResponse: string
-    }
-  }>().props
-
-  useEffect(() => {
-    if (flash.operationResponse) {
-      savedRef.current?.publish()
-    }
-    setData(() => orders.filter(order => order.confirmed_at === undefined))
-  }, [flash.operationResponse])
+  const { data, isLoading, refreshTable, toastRef, flash, renderSubComponent } = useOrderTest({ categories, orders })
 
   return (
     <ToastProvider>
@@ -56,32 +43,10 @@ const OrderTest = ({ orders, doctors, categories }: {
         <Head title="Order Test" />
         <div className="py-3 max-w-6xl w-full mx-auto">
           <div className="flex">
-            <CreateOrderModal doctors={doctors} categories={categories} />
+            <CreateOrderModal externalDoctors={externalDoctors} categories={categories} />
             <PrimaryButton
               className="px-3 py-2 ml-auto"
-              onClick={() => {
-                setIsLoading(true)
-                fetch(route('get.created.orders'))
-                  .then(
-                    response => {
-                      if (!response.ok) {
-                        throw new Error(`Http error. (${response.status})`)
-                      }
-                      return response.json()
-                    }
-                  )
-                  .then(
-                    (data: OrderModelProps[]) => {
-                      setData(data)
-                      setIsLoading(false)
-                    }
-                  )
-                  .catch(
-                    error => {
-                      console.log(error)
-                    }
-                  )
-              }}
+              onClick={refreshTable}
             >
               Refresh <UpdateIcon className="ml-1" />
             </PrimaryButton>
@@ -96,7 +61,7 @@ const OrderTest = ({ orders, doctors, categories }: {
             />
           </div>
           <Toast
-            ref={savedRef}
+            ref={toastRef}
             title='Success!'
             icon={<CheckCircledIcon width={20} height={20} />}
           >
@@ -112,27 +77,3 @@ const OrderTest = ({ orders, doctors, categories }: {
 }
 
 export default OrderTest
-
-const renderSubComponent = ({ row }: { row: Row<OrderModelProps> }) => {
-  return (
-    <div className="flex items-center">
-      <div className="mr-2">
-        Test ordered :
-      </div>
-      {row.original.results.map((result) => (
-        <div
-          key={result._id}
-          className={`px-2 py-0.5 bg-teal-600 rounded-md text-white mr-1 flex items-center`}
-        >
-          {result.test?.name}
-        </div>
-      ))}
-      <PrimaryAnchor
-        className="px-2 py-0.5 ml-auto"
-        href={route('order.detail', { order: row.original.registration_id })}
-      >
-        See Detail
-      </PrimaryAnchor>
-    </div >
-  )
-}

@@ -29,7 +29,7 @@ const ValidateResult = ({ orders }: { orders: OrderModelProps[] }) => {
             className="px-3 py-2"
             href={
               orders[0]
-                ? route('input.result.detail', { order: orders[0].registration_id })
+                ? route('validate.result.detail', { order: orders[0].registration_id })
                 : '#'
             }
           >
@@ -39,7 +39,7 @@ const ValidateResult = ({ orders }: { orders: OrderModelProps[] }) => {
             className="px-3 py-2 ml-auto"
             onClick={() => {
               setIsLoading(true)
-              fetch(route('get.confirmed.orders'))
+              fetch(route('get.inputted.orders'))
                 .then(
                   response => {
                     if (!response.ok) {
@@ -96,7 +96,7 @@ const renderSubComponent = ({ row }: { row: Row<OrderModelProps> }) => {
       ))}
       <PrimaryAnchor
         className="px-2 py-0.5 ml-auto"
-      // href={route('input.result.detail', { order: row.original.registration_id })}
+        href={route('validate.result.detail', { order: row.original.registration_id })}
       >
         See Detail
       </PrimaryAnchor>

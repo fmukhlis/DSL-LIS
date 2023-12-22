@@ -21,19 +21,26 @@ use App\Models\Parameter;
 use App\Models\ParameterValue;
 use App\Models\Result;
 
+use function PHPSTORM_META\map;
+
 class OrderTestController extends Controller
 {
     public function index(): Response
     {
-        $orders = Order::with([
-            'results' => ['test'],
-            'patient',
-            'doctor' => ['specializations']
-        ])->get();
+        $categories = Category::with('tests')->get();
+
+        $externalDoctors = Doctor::whereNotNull('institution')->get();
+
+        $orders = Order::where('status', 'need_confirmation')
+            ->with([
+                'doctor',
+                'patient',
+                'results' => ['test'],
+            ])->get();
 
         return Inertia::render('OrderTest/OrderTest', [
-            'doctors' => Doctor::with('specializations')->get(),
-            'categories' => Category::with('tests')->get(),
+            'categories' => $categories,
+            'externalDoctors' => $externalDoctors,
             'orders' => $orders,
         ]);
     }
@@ -41,31 +48,44 @@ class OrderTestController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
+            'doctor.name' => 'string|required',
+            'doctor.department' => 'string|required',
+
+            'externalDoctor._id' => 'string|nullable',
+            'externalDoctor.institution' => 'string|nullable',
+            'externalDoctor.name' => 'string|nullable',
+
+            'patient.id' => 'numeric|required',
+            'patient.name' => 'string|required',
+            'patient.email' => 'string|nullable',
+
             'is_cito' => 'boolean',
+
             'note' => 'string|nullable',
-            'patient' => 'required|array',
-            'tests.*' => 'exists:tests,_id',
+
+            'payment_method' => 'in:Insurance,BPJS,Self-Payment|required',
+
             'tests' => 'required|array|min:1',
-            'doctor' => 'required|exists:doctors,_id',
-            'payment_method' => 'required|in:Insurance,BPJS,Self-Payment'
+            'tests.*._id' => 'exists:tests,_id',
         ]);
 
         $order = new Order(
             [
-                'note' => $request->note,
                 'is_cito' => $request->is_cito,
+                'note' => $request->note,
                 'payment_method' => $request->payment_method,
                 'registration_id' => Order::generateRegID(),
+                'status' => 'need_confirmation',
             ]
         );
 
         $order->save();
 
         $order->results()->saveMany(
-            collect($request->tests)->map(function (string $test_id, int $key) {
-                $result = Test::find($test_id)->results()->save(new Result());
+            collect($request->tests)->map(function ($test) {
+                $result = Test::find($test['_id'])->results()->save(new Result());
                 $result->parameterValues()->saveMany(
-                    $result->test->parameters->map(function ($parameterInstance, int $key) {
+                    $result->test->parameters->map(function ($parameterInstance) {
                         return new ParameterValue(['value' => 0, 'parameter_id' => $parameterInstance->_id]);
                     })
                 );
@@ -73,43 +93,41 @@ class OrderTestController extends Controller
             })
         );
 
-        // $order->results()->first()->test->parameters()->first()->parameterValues()->save(
-        //     new ParameterValue([
-        //         'value' => 0,
-        //         'parameter_id' => '12345678',
-        //     ])
-        // );
-
-        // $order->results->each(function ($resultInstance, int $key) {
-        //     $resultInstance->parameterValues()->saveMany(
-        //         $resultInstance->test->parameters->map(function ($parameterInstance, int $key) {
-        //             return $parameterInstance->parameterValues()->save(
-        //                 new ParameterValue(['value' => 0])
-        //             );
-        //         })
-        //     );
-        // });
-
-        // $order->tests()->sync(
-        //     collect($request->tests)->map(function (string $item, int $key) {
-        //         return Test::find($item)->_id;
-        //     })->all()
-        // );
-
-        $order->total_price = $order->results()->whereIn('test_id', $request->tests)->get()
+        $order->total_price = $order->results()
+            ->whereIn(
+                'test_id',
+                collect($request->tests)->map(function ($test) {
+                    return $test['_id'];
+                })
+            )
+            ->get()
             ->reduce(function (int $carry, Result $result) {
                 return $carry + $result->test->price;
             }, 0);
 
         $order->save();
 
-        Doctor::find($request->doctor)->orders()->save($order);
+        $isExternal = $request->doctor['name'] === "External doctor...";
+        if ($isExternal) {
+            $doctor = Doctor::find($request->externalDoctor['_id']);
+            if ($doctor) {
+                $doctor->orders()->save($order);
+            } else {
+                Doctor::create([
+                    'name' => $request->externalDoctor['name'],
+                    'institution' => $request->externalDoctor['institution'],
+                ])->orders()->save($order);
+            }
+        } else {
+            $doctor = Doctor::firstOrCreate(
+                ['name' => $request->doctor['name']],
+                ['department' => $request->doctor['department']]
+            )->orders()->save($order);
+        }
 
         $patient = Patient::firstOrNew(
             ['reg_id' => $request->patient['id']],
-            [
-                'name' => $request->patient['first_name'] . " " . $request->patient['last_name'],
-            ]
+            ['name' => $request->patient['name']]
         );
 
         $patient->save();
@@ -129,15 +147,15 @@ class OrderTestController extends Controller
     public function detail(Order $order): Response
     {
         return Inertia::render('OrderTest/ConfirmOrder', [
+            'analysts' => Analyst::all(),
             'order' => $order->load([
-                'results' => ['test'],
-                'patient' => ['contacts'],
                 'doctor' => [
                     'department',
                     'specializations'
                 ],
+                'patient' => ['contacts'],
+                'results' => ['test'],
             ]),
-            'analysts' => Analyst::all(),
         ]);
     }
 
@@ -155,6 +173,7 @@ class OrderTestController extends Controller
         if (Hash::check($request->pin, $analyst->pin)) {
             $isRedirect = $order->confirmed_at === null;
             $order->confirmed_at = now();
+            $order->status = 'input_process';
             $analyst->orders()->save($order);
         } else {
             return back()->withErrors(['pin' => "PIN not match!"]);
