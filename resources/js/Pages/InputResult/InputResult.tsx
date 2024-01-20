@@ -15,10 +15,11 @@ import PrimaryAnchor from "@/Components/PrimaryAnchor"
 import PrimaryButton from "@/Components/PrimaryButton"
 import { UpdateIcon } from "@radix-ui/react-icons"
 import PrimaryOutlineAnchor from "@/Components/PrimaryOutlineAnchor"
+import useInputResult from "./Hooks/useInputResult"
 
 const InputResult = ({ orders }: { orders: OrderModelProps[] }) => {
-  const [data, setData] = useState(() => [...orders])
-  const [isLoading, setIsLoading] = useState(false)
+
+  const { data, isLoading, refreshTable, renderSubComponent } = useInputResult({ orders })
 
   return (
     <AuthenticatedLayout>
@@ -29,7 +30,7 @@ const InputResult = ({ orders }: { orders: OrderModelProps[] }) => {
             className="px-3 py-2"
             href={
               orders[0]
-                ? route('input.result.detail', { order: orders[0].registration_id })
+                ? route('input.detail', { order: orders[0].registration_id })
                 : '#'
             }
           >
@@ -37,29 +38,7 @@ const InputResult = ({ orders }: { orders: OrderModelProps[] }) => {
           </PrimaryOutlineAnchor>
           <PrimaryButton
             className="px-3 py-2 ml-auto"
-            onClick={() => {
-              setIsLoading(true)
-              fetch(route('get.confirmed.orders'))
-                .then(
-                  response => {
-                    if (!response.ok) {
-                      throw new Error(`Http error. (${response.status})`)
-                    }
-                    return response.json()
-                  }
-                )
-                .then(
-                  (data) => {
-                    setData(data)
-                    setIsLoading(false)
-                  }
-                )
-                .catch(
-                  error => {
-                    console.log(error)
-                  }
-                )
-            }}
+            onClick={refreshTable}
           >
             Refresh <UpdateIcon className="ml-1" />
           </PrimaryButton>
@@ -79,27 +58,3 @@ const InputResult = ({ orders }: { orders: OrderModelProps[] }) => {
 }
 
 export default InputResult
-
-const renderSubComponent = ({ row }: { row: Row<OrderModelProps> }) => {
-  return (
-    <div className="flex items-center">
-      <div className="mr-2">
-        Test ordered :
-      </div>
-      {row.original.results.map((result) => (
-        <div
-          key={result._id}
-          className={`px-2 py-0.5 bg-teal-600 rounded-md text-white mr-1 flex items-center`}
-        >
-          {result.test!.name}
-        </div>
-      ))}
-      <PrimaryAnchor
-        className="px-2 py-0.5 ml-auto"
-        href={route('input.result.detail', { order: row.original.registration_id })}
-      >
-        See Detail
-      </PrimaryAnchor>
-    </div >
-  )
-}

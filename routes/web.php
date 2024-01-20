@@ -2,10 +2,10 @@
 
 use App\Http\Controllers\InputResultController;
 use App\Http\Controllers\MasterDataController;
-use App\Http\Controllers\OrderTestController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\StoreOrder;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\ValidateResultController;
 use App\Models\Category;
@@ -33,7 +33,7 @@ use Illuminate\Support\Carbon;
 */
 
 
-Route::get('/', function () {
+Route::get('/', function (Request $request) {
     return Inertia::render('Home');
 });
 
@@ -60,57 +60,47 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-
-
 Route::get('/test-result', function () {
     return Inertia::render('TestResult/TestResult');
 })->middleware(['auth', 'verified'])->name('testresult');
 
-
-
-
-
-
-
-
-
+Route::get('/percobaan-web-php', function (Request $request) {
+    return response()->json([
+        '$request->user()' => $request->user(),
+        'auth()->user()' => auth()->user(),
+    ]);
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('/order-test')
         ->group(function () {
-            Route::controller(OrderTestController::class)
+            Route::controller(\App\Http\Controllers\OrderTest\ViewController::class)
                 ->group(function () {
                     Route::get('/', 'index')->name('order.test');
                     Route::get('/details/{order:registration_id}', 'detail')->name('order.detail');
-
-                    Route::post('/', 'store');
-                    Route::post('/details/{order:registration_id}', 'confirm');
                 });
+            Route::controller(\App\Http\Controllers\OrderTest\ManageAnalyst::class)
+                ->group(function () {
+                    Route::patch('/details/{order:registration_id}/confirm', 'confirm')->name('confirm.order');
+                    Route::patch('/details/{order:registration_id}/change', 'change')->name('change.analyst');
+                });
+
+            Route::post('/', \App\Http\Controllers\OrderTest\StoreOrder::class);
+            Route::patch('/details/{order:registration_id}', \App\Http\Controllers\OrderTest\UpdateOrder::class);
+            Route::delete('/details/{order:registration_id}', \App\Http\Controllers\OrderTest\DeleteOrder::class);
         });
 
     Route::prefix('/input-result')
         ->group(function () {
-            Route::controller(InputResultController::class)
+            Route::controller(\App\Http\Controllers\InputResult\ViewController::class)
                 ->group(function () {
                     Route::get('/', 'index')->name('input.result');
-                    Route::get('/details/{order:registration_id}', 'detail')->name('input.result.detail');
-
-                    Route::post('/details/{order:registration_id}', 'store');
-                    Route::post('/proceed/{order:registration_id}', 'proceed')->name('input.result.proceed');
+                    Route::get('/details/{order:registration_id}', 'detail')->name('input.detail');
                 });
 
-            Route::get('/api', function () {
-                $data = Order::whereNotNull('confirmed_at')
-                    ->whereNull('inputted_at')
-                    ->with([
-                        'results' => ['test'],
-                        'patient',
-                        'analyst',
-                    ])->get();
-
-                return response()->json($data);
-            })->name('get.confirmed.orders');
+            Route::patch('/details/{order:registration_id}', \App\Http\Controllers\InputResult\StoreResult::class);
+            Route::post('/details/{order:registration_id}/submit', \App\Http\Controllers\InputResult\SubmitResult::class)->name('submit.result');
         });
 
     Route::prefix('/validate-result')

@@ -1,15 +1,15 @@
 // Inertia JS
 import {
-    Head,
+    Head, Link,
 } from '@inertiajs/react'
 
 // Internal
 
-export default function Home({ categories }: { categories: Record<string, unknown>[] }) {
-
+export default function Home() {
     return (
         <>
             <Head title="Home" />
+            <Link href={route('login')} >Login</Link>
         </>
     );
 }

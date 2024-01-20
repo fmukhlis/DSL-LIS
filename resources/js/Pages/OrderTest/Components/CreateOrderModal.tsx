@@ -1,16 +1,8 @@
-import {
-  useState,
-  FormEvent,
-  useEffect,
-} from 'react'
-
 // Internal
 import Checkbox from "@/Components/Checkbox"
 import Textarea from "@/Components/Textarea"
 import PrimaryButton from '@/Components/PrimaryButton'
-import { Select, SelectItem } from '@/Components/Select'
 import SecondaryButton from '@/Components/SecondaryButton'
-import SearchableSelect from "@/Components/SearchableSelect"
 import PrimaryOutlineButton from '@/Components/PrimaryOutlineButton'
 import SearchableAsyncSelect from "@/Components/SearchableAsyncSelect"
 
@@ -25,25 +17,28 @@ import {
 } from "@/Components/Dialog"
 
 // Inertia JS
-import { useForm } from '@inertiajs/react'
 import { FilePlusIcon, UpdateIcon } from '@radix-ui/react-icons'
 import Alert from '@/Components/Alert'
-import {
-  CategoryModelProps,
-  DoctorModelProps,
-} from '@/Types'
-import useCreateOrderModal from './Hooks/useCreateOrderModal'
+import { CategoryModelProps, DoctorModelProps, TestModelProps } from '@/Types'
+import useCreateOrderModal from '../Hooks/useCreateOrderModal'
 import Input from '@/Components/Input'
 import CreateableSearchableSelect from '@/Components/CreateableSearchableSelect'
 
-const CreateOrderModal = ({ categories, externalDoctors }: {
+const CreateOrderModal = ({ can, categories, externalDoctors, processedRegID, triggerElement }: {
+  can: {
+    selectExternalDoctor: boolean
+    viewDetail: boolean
+  }
   categories: CategoryModelProps[]
   externalDoctors: DoctorModelProps[]
+  processedRegID: string[]
+  triggerElement: JSX.Element
 }) => {
 
   const {
     data,
     errors,
+    extDrExist,
     externalDoctorOptions,
     handleCITOCheckboxInput,
     handleInstitutionTextInput,
@@ -59,7 +54,7 @@ const CreateOrderModal = ({ categories, externalDoctors }: {
     selectPatient,
     setIsOpen,
     submitForm,
-  } = useCreateOrderModal({ categories, externalDoctors })
+  } = useCreateOrderModal({ can, externalDoctors, processedRegID })
 
   return (
     <Dialog
@@ -67,7 +62,7 @@ const CreateOrderModal = ({ categories, externalDoctors }: {
       onOpenChange={setIsOpen}
     >
       <DialogTrigger asChild>
-        <PrimaryOutlineButton className="px-3 py-2">Make new order</PrimaryOutlineButton>
+        {triggerElement}
       </DialogTrigger>
       <DialogContent className='w-[600px] h-full overflow-hidden select-none'>
 
@@ -95,6 +90,10 @@ const CreateOrderModal = ({ categories, externalDoctors }: {
             {errors.is_cito && <Alert formID={0} message={errors.is_cito} type='error' />}
             {errors.patient && <Alert formID={0} message={errors.patient} type='error' />}
             {errors.payment_method && <Alert formID={0} message={errors.payment_method} type='error' />}
+            {
+              // @ts-ignore
+              errors['externalDoctor.institution'] && <Alert formID={0} message={errors['externalDoctor.institution']} type='error' />
+            }
 
             <div className="flex flex-col gap-2 ">
               <div className='flex flex-col gap-2'>
@@ -141,7 +140,8 @@ const CreateOrderModal = ({ categories, externalDoctors }: {
                     />
                     <Input
                       className='w-2/5'
-                      value={data.externalDoctor.department}
+                      disabled={extDrExist}
+                      value={data.externalDoctor.institution}
                       onChange={(e) => {
                         handleInstitutionTextInput(e.target.value)
                       }}

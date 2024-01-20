@@ -1,32 +1,30 @@
 import { Fragment, useState } from "react"
 
 // Internal
-import PrimaryOutlineButton from "@/Components/PrimaryOutlineButton"
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout"
-import PrimaryAnchor from "@/Components/PrimaryAnchor"
 
 // Inertia JS
 import { Head } from "@inertiajs/react"
-import { ArrowLeftIcon, DotFilledIcon, DoubleArrowDownIcon, DoubleArrowUpIcon } from "@radix-ui/react-icons"
-import ConfirmOrderModal from "./ConfirmOrderModal"
+import { ArrowLeftIcon, DoubleArrowDownIcon, DoubleArrowUpIcon } from "@radix-ui/react-icons"
+import ConfirmOrderModal from "./Components/ConfirmOrderModal"
 import PrimaryOutlineAnchor from "@/Components/PrimaryOutlineAnchor"
 import {
     AnalystModelProps,
     OrderModelProps
 } from "@/Types"
 
+const dateConfig: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+}
+
 const ConfirmOrder = ({ order, analysts }: {
     order: OrderModelProps
     analysts: AnalystModelProps[]
 }) => {
-
-    const dateConfig: Intl.DateTimeFormatOptions = {
-        year: 'numeric',
-        month: 'short',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-    }
 
     const [isShow, setIsShow] = useState(false)
 
@@ -57,7 +55,7 @@ const ConfirmOrder = ({ order, analysts }: {
                             <div className="flex flex-col gap-1.5 w-1/5">
                                 <div className="flex flex-col">
                                     <span className="font-bold">Name: </span>
-                                    <span className="text-teal-700">{order.patient!.name}</span>
+                                    <span className="text-teal-700">{order.patient?.name}</span>
                                 </div>
 
                                 <div className="flex flex-col">
@@ -114,7 +112,7 @@ const ConfirmOrder = ({ order, analysts }: {
                                 <div className="flex flex-col">
                                     <span className="font-bold">Contact: </span>
                                     {
-                                        order.patient!.contacts.map(contact => (
+                                        order.patient?.contacts.map(contact => (
                                             <span
                                                 key={contact._id}
                                                 className="text-teal-700"
@@ -151,18 +149,23 @@ const ConfirmOrder = ({ order, analysts }: {
                         <div className="flex">
                             <span className="mr-3 w-36">Referring Physician: </span>
                             <span className="font-bold">
-                                Dr. {order.doctor!.name}
-                                {order.doctor!.specializations!.map(specialization => (
-                                    <Fragment key={specialization._id}>, {specialization.title}</Fragment>
-                                ))}
+                                {order.doctor?.name}
                             </span>
                             <div className="flex gap-1 items-center ml-auto font-bold text-teal-600">
                                 {new Date(order.created_at).toLocaleDateString('en-GB', dateConfig)}
                             </div>
                         </div>
                         <div className="flex">
-                            <span className="mr-3 w-36">Clinical Department: </span>
-                            <span className="font-bold">{order.doctor!.department!.name}</span>
+                            {
+                                order.doctor?.department
+                                    ? <>
+                                        <span className="mr-3 w-36">Clinical Department: </span>
+                                        <span className="font-bold">{order.doctor?.department}</span>
+                                    </> : <>
+                                        <span className="mr-3 w-36">Institution: </span>
+                                        <span className="font-bold">{order.doctor?.institution}</span>
+                                    </>
+                            }
                         </div>
                         <div>
                             <h3 className="font-bold items-center flex justify-between mt-2 mb-1">
@@ -182,9 +185,9 @@ const ConfirmOrder = ({ order, analysts }: {
                                     key={result._id}
                                     className="flex items-end gap-3"
                                 >
-                                    <span className="min-w-fit">{result.test!.name}</span>
+                                    <span className="min-w-fit">{result.test?.name}</span>
                                     <span className="w-full border border-teal-500 h-0 border-dashed mb-1"></span>
-                                    <span className="min-w-fit text-end">{result.test!.price.toLocaleString('id-ID', {
+                                    <span className="min-w-fit text-end">{result.test?.price.toLocaleString('id-ID', {
                                         style: 'currency',
                                         currency: 'IDR',
                                         maximumFractionDigits: 0,

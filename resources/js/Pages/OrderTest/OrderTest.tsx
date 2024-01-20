@@ -1,41 +1,42 @@
-import {
-  useRef,
-  useState,
-  useEffect,
-} from "react"
-
 // Inertia
-import { Head, usePage } from "@inertiajs/react"
-
-// TanStack Table
-import { Row } from "@tanstack/react-table"
+import { Head } from "@inertiajs/react"
 
 // Internal
 import DataTable from "./DataTable"
-import CreateOrderModal from "./CreateOrderModal"
+import CreateOrderModal from "./Components/CreateOrderModal"
 import PrimaryButton from "@/Components/PrimaryButton"
-import PrimaryAnchor from "@/Components/PrimaryAnchor"
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout"
 import { columns } from "./Columns"
-import { generateOrderData } from "../Faker"
 import {
   OrderModelProps,
   DoctorModelProps,
   CategoryModelProps,
 } from "@/Types"
 import { CheckCircledIcon, UpdateIcon } from "@radix-ui/react-icons"
-import { Toast, ToastProvider, ToastTitle, ToastViewport } from "@/Components/Toast"
+import { Toast, ToastProvider, ToastViewport } from "@/Components/Toast"
 import useOrderTest from "./Hooks/useOrderTest"
+import PrimaryOutlineButton from "@/Components/PrimaryOutlineButton"
 
 // const defaultData: TestOrderProps[] = generateOrderData(10)
 
-const OrderTest = ({ categories, externalDoctors, orders }: {
+const OrderTest = ({ can, categories, externalDoctors, processedRegID, unconfirmedOrders }: {
+  can: {
+    selectExternalDoctor: boolean
+    viewDetail: boolean
+  }
   categories: CategoryModelProps[]
   externalDoctors: DoctorModelProps[]
-  orders: OrderModelProps[]
+  unconfirmedOrders: OrderModelProps[]
+  processedRegID: string[]
 }) => {
 
-  const { data, isLoading, refreshTable, toastRef, flash, renderSubComponent } = useOrderTest({ categories, orders })
+  const { data, isLoading, refreshTable, toastRef, flash, renderSubComponent } = useOrderTest({
+    can,
+    categories,
+    externalDoctors,
+    processedRegID,
+    unconfirmedOrders,
+  })
 
   return (
     <ToastProvider>
@@ -43,7 +44,15 @@ const OrderTest = ({ categories, externalDoctors, orders }: {
         <Head title="Order Test" />
         <div className="py-3 max-w-6xl w-full mx-auto">
           <div className="flex">
-            <CreateOrderModal externalDoctors={externalDoctors} categories={categories} />
+            <CreateOrderModal
+              can={can}
+              processedRegID={processedRegID}
+              triggerElement={
+                <PrimaryOutlineButton className="px-3 py-2">Make new order</PrimaryOutlineButton>
+              }
+              categories={categories}
+              externalDoctors={externalDoctors}
+            />
             <PrimaryButton
               className="px-3 py-2 ml-auto"
               onClick={refreshTable}

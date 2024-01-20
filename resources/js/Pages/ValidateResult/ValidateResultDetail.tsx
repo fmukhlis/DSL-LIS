@@ -6,12 +6,12 @@ import { Head } from "@inertiajs/react"
 // Internal
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout"
 import PrimaryOutlineAnchor from "@/Components/PrimaryOutlineAnchor"
-import ChangeAnalystModal from "./Component/ChangeAnalystModal"
+import ChangeAnalystModal from "./Components/ChangeAnalystModal"
 import { AnalystModelProps, OrderModelProps } from "@/Types"
-import PatientInformation from "./Component/PatientInformation"
+import PatientInformation from "./Components/PatientInformation"
 import { MainContextProvider } from "./Context/MainContext"
-import TestDetailsTab from "./Component/TestDetailsTab"
-import SubmitModal from "./Component/SubmitModal"
+import TestDetailsTab from "./Components/TestDetailsTab"
+import SubmitModal from "./Components/SubmitModal"
 
 // Radix UI
 import * as PrimitivesTabs from '@radix-ui/react-tabs'

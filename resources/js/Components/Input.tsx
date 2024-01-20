@@ -24,6 +24,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 className={`
                 border-gray-300 rounded-sm shadow-sm text-sm form-input
                 focus:text-black focus:border-teal-600 focus:ring-teal-500 focus:ring-2 focus:ring-offset-2
+                disabled:bg-gray-100 disabled:text-gray-400
                 ${className}
             `}
             />

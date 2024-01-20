@@ -12,16 +12,25 @@ import { ActionMeta } from "react-select"
 // Faker JS
 import { faker } from "@faker-js/faker"
 
-const useCreateOrderModal = ({ can, externalDoctors, processedRegID }: {
+const useEditOrderModal = ({ can, defaultData, externalDoctors, processedRegID }: {
   can: {
     selectExternalDoctor: boolean
     viewDetail: boolean
   },
+  defaultData: {
+    note?: string
+    tests: TestModelProps[]
+    is_cito: boolean
+    patient: RegisteredPatientProps
+    doctor: RegisteredDoctorProps
+    externalDoctor?: DoctorModelProps
+    payment_method: 'BPJS' | 'Insurance' | 'Self-Payment'
+  }
   externalDoctors: DoctorModelProps[]
   processedRegID: string[]
 }) => {
 
-  const { data, setData, errors, clearErrors, reset, processing, post } = useForm<{
+  const { data, setData, errors, clearErrors, reset, processing, patch, transform } = useForm<{
     note: string
     tests: TestModelProps[]
     is_cito: boolean
@@ -30,18 +39,20 @@ const useCreateOrderModal = ({ can, externalDoctors, processedRegID }: {
     externalDoctor: DoctorModelProps
     payment_method: 'BPJS' | 'Insurance' | 'Self-Payment' | ''
   }>({
-    note: '',
-    tests: [],
-    doctor: null,
-    externalDoctor: {
+    note: defaultData?.note ?? '',
+    tests: defaultData.tests,
+    doctor: defaultData.doctor,
+    externalDoctor: defaultData.externalDoctor ?? {
       _id: '',
       institution: '',
       name: '',
     },
-    patient: null,
-    is_cito: false,
-    payment_method: ''
+    patient: defaultData.patient,
+    is_cito: defaultData.is_cito,
+    payment_method: defaultData.payment_method
   })
+
+  const deleteForm = useForm()
 
   const [isExternal, setIsExternal] = useState(false)
   const [extDrExist, setExtDrExist] = useState(true)
@@ -64,7 +75,10 @@ const useCreateOrderModal = ({ can, externalDoctors, processedRegID }: {
             route('fetch.registered.patients')
           )
           const registeredPatients = response.data.filter(
-            registeredPatient => !(processedRegID.includes(registeredPatient.registration_id))
+            registeredPatient =>
+              // Exclude the current registration ID from processedRegID array
+              !(processedRegID.filter(regID => regID !== defaultData.patient.registration_id)
+                .includes(registeredPatient.registration_id))
           ).map(
             registeredPatient => ({
               value: registeredPatient,
@@ -215,8 +229,19 @@ const useCreateOrderModal = ({ can, externalDoctors, processedRegID }: {
   const submitForm = (e: FormEvent) => {
     e.preventDefault()
     clearErrors()
-    post(
-      route('order.test'),
+    patch(
+      route('order.detail', { registration_id: defaultData.patient.registration_id }),
+      {
+        onSuccess: () => {
+          setIsOpen(false)
+        }
+      }
+    )
+  }
+
+  const deleteOrder = (e: FormEvent) => {
+    e.preventDefault()
+    deleteForm.delete(route('order.detail', { registration_id: defaultData.patient.registration_id }),
       {
         onSuccess: () => {
           setIsOpen(false)
@@ -227,7 +252,6 @@ const useCreateOrderModal = ({ can, externalDoctors, processedRegID }: {
 
   useEffect(() => {
     if (!isOpen) {
-      setExtDrExist(true)
       reset()
       clearErrors()
     }
@@ -248,6 +272,8 @@ const useCreateOrderModal = ({ can, externalDoctors, processedRegID }: {
 
   return ({
     data,
+    deleteOnProcess: deleteForm.processing,
+    deleteOrder,
     errors,
     extDrExist,
     externalDoctorOptions,
@@ -268,4 +294,4 @@ const useCreateOrderModal = ({ can, externalDoctors, processedRegID }: {
   })
 }
 
-export default useCreateOrderModal
+export default useEditOrderModal

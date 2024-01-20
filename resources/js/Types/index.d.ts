@@ -104,7 +104,7 @@ export interface ParameterModelProps {
 
 export interface PatientModelProps {
     _id: string
-    reg_id: number
+    patient_id: string
     name: string
     contact_ids: string[]
 
@@ -115,8 +115,6 @@ export interface PatientModelProps {
 export interface ResultModelProps {
     _id: string
     test_id: string
-    updated_at: string
-    created_at: string
     order_id: string
     parameterValues: {
         _id: { $oid: string }
@@ -163,32 +161,26 @@ export interface UnitModelProps {
     parameter: ParameterModelProps
 }
 
-export interface InputResultProps {
-    registration_id: string
-    confirmed_at : Date
-    created_at: Date
-    patient_id: string
-    analyst_id: string
-    is_cito: boolean
+export interface UserModelProps {
+    _id: string
+    username: string
+    password: string
+    updated_at: string
+    created_at: string
+    role: 'client' | 'sales' | 'admin' | 'super'
+    department?: string 
+}
 
-    patient: {
-        _id: string
-        name: string
-    }
-    analyst: {
-        _id: string
-        name: string
-        title: string
-    }
-    tests: {
-        _id: string
-        name: string
-        category_id: string
-        is_manual: boolean
-        order_id: string[]
-        parameter_ids: string[]
-        price: number
-    }[]
+export interface RegisteredPatientProps {
+    contacts: Record<string, string>[]
+    name: string
+    patient_id: string
+    registration_id: string
+}
+
+export interface RegisteredDoctorProps {
+    name: string
+    department: string
 }
 
 export interface DataTableProps<TData> {
@@ -197,11 +189,6 @@ export interface DataTableProps<TData> {
     isLoading: boolean
     getRowCanExpand: (row: Row<TData>) => boolean
     renderSubComponent: (props: {row: Row<TData>}) => React.ReactElement
-}
-
-export interface AnchorProps extends InertiaLinkProps {
-    children: React.ReactNode
-    className?: string
 }
 
 export interface AuthenticatedLayoutProps extends ComponentPropsWithoutRef<'button'> {
@@ -221,68 +208,4 @@ export interface NavigationMenuDropdownProps extends DMTriggerProps {
 
 export interface InputProps extends ComponentPropsWithRef<'input'> {
     isFocused? : boolean
-}
-
-export interface SingleOrderProps {
-    registration_id: string
-    created_at: string
-    confirmed_at?: string
-    is_cito: boolean
-    payment_method: 'BPJS' | 'Self-Payment' | 'Insurance'
-    note: string
-    total_price: number
-
-    analyst: {
-        name: string
-        title: string
-    }
-
-    patient: {
-        name: string
-        reg_id: string
-        contacts: {
-            _id: string
-            contact: string
-            type: string
-        }[]
-    }
-
-    doctor: {
-        name: string,
-        specializations: {
-            _id: string
-            title: string
-        }[],
-        department: {
-            name: string
-        }
-    }
-
-    tests: {
-        _id: string
-        name: string
-        price: number
-        is_manual: boolean
-        parameters: {
-            _id: string
-            name: string
-            units: {
-                name: string
-                max_abnormal: number
-                min_abnormal: number
-            }[]
-        }[]
-    }[]
-
-    results: {
-        _id: string
-        created_at: string
-        updated_at: string
-        test_id: string
-        parameterValues: {
-            _id: { $oid: string }
-            parameter_id: string
-            value: number
-        }
-    }[]
 }

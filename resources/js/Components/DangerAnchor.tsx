@@ -1,12 +1,12 @@
-import {
-    forwardRef,
-    ComponentPropsWithRef,
-} from "react";
+import { forwardRef } from "react";
 
-export default forwardRef<HTMLButtonElement, ComponentPropsWithRef<'button'>>(
+// Inertia JS
+import { InertiaLinkProps, Link } from "@inertiajs/react";
+
+export default forwardRef<HTMLAnchorElement, InertiaLinkProps>(
     ({ children, className = '', ...props }, forwardedRef) => {
         return (
-            <button
+            <Link
                 {...props}
                 ref={forwardedRef}
                 className={`inline-flex items-center justify-center
@@ -19,7 +19,7 @@ export default forwardRef<HTMLButtonElement, ComponentPropsWithRef<'button'>>(
                 }
             >
                 {children}
-            </button>
+            </Link>
         )
     }
 )

@@ -1,12 +1,11 @@
 // Tanstack Table
-import {
-    ColumnDef,
-    FilterFnOption,
-} from "@tanstack/react-table";
+import { ColumnDef, FilterFnOption } from "@tanstack/react-table";
 
 // Internal
-import { InputResultProps, OrderModelProps } from '@/Types'
+import { OrderModelProps } from '@/Types'
 import PrimaryButton from "@/Components/PrimaryButton";
+
+// Radix UI
 import {
     CheckCircledIcon,
     Cross2Icon,

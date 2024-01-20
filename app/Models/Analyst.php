@@ -22,4 +22,9 @@ class Analyst extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
 }
