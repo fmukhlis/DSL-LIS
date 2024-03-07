@@ -10,14 +10,21 @@ class SubmitResult extends Controller
 {
     public function __invoke(\App\Models\Order $order): RedirectResponse
     {
-        $notFilledAll = $order->results->first(function (\App\Models\Result $result) {
-            return $result->parameterValues->first(function (\App\Models\ParameterValue $parameterValue) {
-                return $parameterValue->value === 0;
-            }) !== null;
-        });
+        // Ensure all parameters have been filled up
+        $invalidResults = $order->results->filter(fn (\App\Models\Result $result) => (
+            $result->parameterValues->contains(fn (\App\Models\ParameterValue $parameterValue) => (
+                $parameterValue->value <= 0
+            ))
+        ));
 
-        if ($notFilledAll) {
-            return back();
+        $invalidResultIDs = $invalidResults->map(fn (\App\Models\Result $result) => ([
+            $result->_id => 'Invalid result value.'
+        ]))->flatMap(fn ($resultArr) => $resultArr)->all();
+
+        if ($invalidResults->count()) {
+            return back()->withErrors(
+                $invalidResultIDs
+            );
         }
 
         $order->inputted_at = now();
@@ -25,7 +32,7 @@ class SubmitResult extends Controller
         $order->save();
 
         return redirect()->route('input.result')->with(
-            'operationResponse',
+            'toastMsg',
             'The order with ID: ' . $order->registration_id . ' has been inputted by ' . $order->analyst->name
         );
     }

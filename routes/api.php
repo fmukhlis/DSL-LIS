@@ -19,7 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:sanctum')->get('/percobaan-api-php', function (Request $request) {
+Route::middleware('auth:sanctum')->get('/percobaan', function (Request $request) {
     return "asdasd";
 });
 
@@ -41,31 +41,24 @@ Route::middleware('auth:sanctum')->get('/order-test', function () {
                 'results' => ['test'],
             ])->get();
     }
-
     return response()->json($orders);
 })->name('fetch.created.orders');
 
-Route::get('/input-result', function (Request $request) {
-    $user = \App\Models\User::where('username', $request->username)->first();
-
-    if (!$user) {
-        return abort(403);
-    }
-
-    if ($user->role === 'client') {
+Route::middleware('auth:sanctum')->get('/input-result', function () {
+    if (auth()->user()->role === 'client') {
         $orders = \App\Models\Order::where('status', 'input_process')
-            ->whereRelation('doctor', 'department', $user->department)
+            ->whereRelation('doctor', 'department', auth()->user()->department)
             ->with([
-                'doctor',
-                'patient' => ['contacts'],
+                'analyst',
+                'patient',
                 'results' => ['test'],
             ])->get();
     } else {
         // Other roles have the same behavior
         $orders = \App\Models\Order::where('status', 'input_process')
             ->with([
-                'doctor',
-                'patient' => ['contacts'],
+                'analyst',
+                'patient',
                 'results' => ['test'],
             ])->get();
     }

@@ -35,8 +35,14 @@ class StoreOrder extends Controller
 
         $this->authorize('create', [\App\Models\Order::class, $request->doctor['department']]);
 
-        // Check if the order is not a duplicate
+        // Ensure the order is not a duplicate
         if (\App\Models\Order::where('registration_id', $request->patient['registration_id'])->get()->count()) {
+            return back();
+        }
+
+        // Ensure the external doctor is not null
+        $isExternal = $request->doctor['name'] === "External doctor...";
+        if ($isExternal && !$request->externalDoctor['name']) {
             return back();
         }
 
@@ -76,7 +82,6 @@ class StoreOrder extends Controller
             }, 0);
         $order->save();
 
-        $isExternal = $request->doctor['name'] === "External doctor...";
         if ($isExternal) {
             // If the external doctor is already registered in the database,
             // $request->externalDoctor['id'] will store a specific doctor id
@@ -114,6 +119,6 @@ class StoreOrder extends Controller
         );
         $patient->orders()->save($order);
 
-        return back()->with('operationResponse', 'Order with ID: ' . $order->registration_id . ' has been created successfully!');
+        return back()->with('toastMsg', 'Order with ID: ' . $order->registration_id . ' has been created successfully!');
     }
 }

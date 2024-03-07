@@ -1,7 +1,8 @@
 import { 
     ReactElement, 
     ComponentPropsWithRef,
-    ComponentPropsWithoutRef, 
+    ComponentPropsWithoutRef,
+    ReactNode, 
 } from "react"
 
 // TanStack Table
@@ -18,14 +19,20 @@ import {
     DropdownMenuContentProps as DMContentProps, 
     DropdownMenuTriggerProps as DMTriggerProps,
 } from "@radix-ui/react-dropdown-menu"
-import { TransitionFn } from "@react-spring/web"
+import * as PrimitivesDialog from '@radix-ui/react-dialog'
+import * as PrimitivesToast from '@radix-ui/react-toast'
+
+// React Spring
+import { SpringValue, TransitionFn } from "@react-spring/web"
 
 // React Select
 import { GroupBase } from "react-select"
 import type { } from "react-select/base"
 
-
-
+export interface FlashDataProps {
+    toastMsg: string | null
+    responseMsg: string | null
+}
 
 export interface AnalystModelProps {
     _id: string
@@ -172,7 +179,7 @@ export interface UserModelProps {
 }
 
 export interface RegisteredPatientProps {
-    contacts: Record<string, string>[]
+    contacts: Record<string, string>
     name: string
     patient_id: string
     registration_id: string
@@ -208,4 +215,21 @@ export interface NavigationMenuDropdownProps extends DMTriggerProps {
 
 export interface InputProps extends ComponentPropsWithRef<'input'> {
     isFocused? : boolean
+}
+
+export interface DialogContentProps extends PrimitivesDialog.DialogContentProps {
+    style: {
+        [key: string]: SpringValue<any>
+        opacity: any
+    }
+}
+
+export interface ToastProps extends PrimitivesToast.ToastProps {
+    icon?: JSX.Element
+}
+
+
+export interface DateParamProps {
+    endDate?: string
+    startDate?: string
 }

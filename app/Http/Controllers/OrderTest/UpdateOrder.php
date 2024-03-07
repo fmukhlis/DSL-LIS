@@ -110,6 +110,6 @@ class UpdateOrder extends Controller
         //     return back();
         // }
 
-        return back();
+        return back()->with('toastMsg', 'Order with ID: ' . $order->registration_id . ' has been updated successfully!');
     }
 }

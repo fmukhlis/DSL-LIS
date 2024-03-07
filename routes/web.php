@@ -64,7 +64,7 @@ Route::get('/test-result', function () {
     return Inertia::render('TestResult/TestResult');
 })->middleware(['auth', 'verified'])->name('testresult');
 
-Route::get('/percobaan-web-php', function (Request $request) {
+Route::get('/percobaan', function (Request $request) {
     return response()->json([
         '$request->user()' => $request->user(),
         'auth()->user()' => auth()->user(),
@@ -72,7 +72,6 @@ Route::get('/percobaan-web-php', function (Request $request) {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-
     Route::prefix('/order-test')
         ->group(function () {
             Route::controller(\App\Http\Controllers\OrderTest\ViewController::class)
@@ -100,7 +99,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 });
 
             Route::patch('/details/{order:registration_id}', \App\Http\Controllers\InputResult\StoreResult::class);
-            Route::post('/details/{order:registration_id}/submit', \App\Http\Controllers\InputResult\SubmitResult::class)->name('submit.result');
+            Route::patch('/details/{order:registration_id}/submit', \App\Http\Controllers\InputResult\SubmitResult::class)->name('submit.result');
         });
 
     Route::prefix('/validate-result')

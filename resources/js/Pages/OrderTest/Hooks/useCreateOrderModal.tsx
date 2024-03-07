@@ -1,25 +1,23 @@
-import { FormEvent, useEffect, useState } from "react"
+import { FormEvent, useContext, useEffect, useState } from "react"
 
 // Inertia JS
-import { useForm, usePage } from "@inertiajs/react"
+import { useForm } from "@inertiajs/react"
 
 // Internal
-import { DoctorModelProps, PatientModelProps, RegisteredDoctorProps, RegisteredPatientProps, TestModelProps, UserModelProps } from "@/Types"
+import { DoctorModelProps, RegisteredDoctorProps, RegisteredPatientProps, TestModelProps } from "@/Types"
+import { OrderTestContext } from "../Context/OrderTestContext"
+import { dialogTransition } from "@/Components/Dialog"
 
 // React Select
 import { ActionMeta } from "react-select"
 
 // Faker JS
 import { faker } from "@faker-js/faker"
+import { useSpring } from "@react-spring/web"
 
-const useCreateOrderModal = ({ can, externalDoctors, processedRegID }: {
-  can: {
-    selectExternalDoctor: boolean
-    viewDetail: boolean
-  },
-  externalDoctors: DoctorModelProps[]
-  processedRegID: string[]
-}) => {
+const useCreateOrderModal = () => {
+
+  const orderTestContext = useContext(OrderTestContext)
 
   const { data, setData, errors, clearErrors, reset, processing, post } = useForm<{
     note: string
@@ -44,8 +42,19 @@ const useCreateOrderModal = ({ can, externalDoctors, processedRegID }: {
   })
 
   const [isExternal, setIsExternal] = useState(false)
-  const [extDrExist, setExtDrExist] = useState(true)
+  const [extDrExist, setExtDrExist] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+
+  const [fade, fadeAPI] = dialogTransition(isOpen)
+  const [spring, springAPI] = useSpring(() => ({
+    from: { opacity: 0.4 }
+  }))
+  const [tab, setTab] = useState(orderTestContext?.categories[0]._id)
+  const handleTabChange = (value: string) => {
+    springAPI.set({ opacity: 0.4 })
+    springAPI.start({ opacity: 1 })
+    setTab(value)
+  }
 
   let typingTimeoutPatient: ReturnType<typeof setTimeout>
   let typingTimeoutDoctor: ReturnType<typeof setTimeout>
@@ -64,7 +73,9 @@ const useCreateOrderModal = ({ can, externalDoctors, processedRegID }: {
             route('fetch.registered.patients')
           )
           const registeredPatients = response.data.filter(
-            registeredPatient => !(processedRegID.includes(registeredPatient.registration_id))
+            registeredPatient => !(orderTestContext?.processedRegID.includes(
+              registeredPatient.registration_id
+            ))
           ).map(
             registeredPatient => ({
               value: registeredPatient,
@@ -103,7 +114,7 @@ const useCreateOrderModal = ({ can, externalDoctors, processedRegID }: {
             }))
 
             resolve(
-              can.selectExternalDoctor ? [
+              orderTestContext?.can.selectExternalDoctor ? [
                 {
                   label: 'External doctor...',
                   value: {
@@ -147,7 +158,7 @@ const useCreateOrderModal = ({ can, externalDoctors, processedRegID }: {
     setData('doctor', newValue ? newValue.value : null)
   }
 
-  const externalDoctorOptions = externalDoctors.map(externalDoctor => ({
+  const externalDoctorOptions = orderTestContext?.externalDoctors.map(externalDoctor => ({
     value: externalDoctor._id,
     label: externalDoctor.name,
   }))
@@ -172,15 +183,25 @@ const useCreateOrderModal = ({ can, externalDoctors, processedRegID }: {
           name: newValue!.value,
         }
       }))
-    } else {
+    } else if (actionMeta.action === "select-option") {
       setExtDrExist(true)
-      const selectedExternalDoctor = externalDoctors.find(doctor => doctor._id === newValue?.value)
+      const selectedExternalDoctor = orderTestContext?.externalDoctors.find(doctor => doctor._id === newValue?.value)
       setData(data => ({
         ...data,
         externalDoctor: {
           _id: newValue ? newValue.value : '',
           institution: selectedExternalDoctor ? selectedExternalDoctor.institution : '',
           name: selectedExternalDoctor ? selectedExternalDoctor.name : '',
+        }
+      }))
+    } else {
+      setExtDrExist(false)
+      setData(data => ({
+        ...data,
+        externalDoctor: {
+          _id: '',
+          institution: '',
+          name: '',
         }
       }))
     }
@@ -227,10 +248,13 @@ const useCreateOrderModal = ({ can, externalDoctors, processedRegID }: {
 
   useEffect(() => {
     if (!isOpen) {
-      setExtDrExist(true)
+      setExtDrExist(false)
       reset()
       clearErrors()
+    } else {
+      springAPI.start({ opacity: 1 })
     }
+    fadeAPI.start()
   }, [isOpen])
 
   useEffect(() => {
@@ -238,6 +262,7 @@ const useCreateOrderModal = ({ can, externalDoctors, processedRegID }: {
       setIsExternal(true)
     } else {
       setIsExternal(false)
+      setExtDrExist(false)
       setData('externalDoctor', {
         _id: '',
         institution: '',
@@ -247,13 +272,16 @@ const useCreateOrderModal = ({ can, externalDoctors, processedRegID }: {
   }, [data.doctor])
 
   return ({
+    categories: orderTestContext?.categories,
     data,
     errors,
     extDrExist,
     externalDoctorOptions,
+    fade,
     handleCITOCheckboxInput,
     handleInstitutionTextInput,
     handleNoteTextInput,
+    handleTabChange,
     handleTestsCheckboxInput,
     isExternal,
     isOpen,
@@ -264,7 +292,9 @@ const useCreateOrderModal = ({ can, externalDoctors, processedRegID }: {
     selectExternalDoctor,
     selectPatient,
     setIsOpen,
-    submitForm
+    spring,
+    submitForm,
+    tab,
   })
 }
 

@@ -60,4 +60,16 @@ class OrderPolicy
         }
         return $user->department === $order->doctor->department;
     }
+
+    /**
+     * Determine whether the user can update the model.
+     */
+    public function inputResult(User $user): bool
+    {
+        if ($user->role === 'sales') {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

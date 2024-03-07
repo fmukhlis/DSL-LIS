@@ -1,41 +1,32 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 // Internal
 import PrimaryAnchor from "@/Components/PrimaryAnchor"
-import { OrderModelProps, UserModelProps } from "@/Types"
+import { FlashDataProps, OrderModelProps } from "@/Types"
 
 // Tanstack Table
 import { Row } from "@tanstack/react-table"
-
-// Inertia JS
 import { usePage } from "@inertiajs/react"
 
-const useInputResult = ({ orders }: {
-    orders: OrderModelProps[]
+const useInputResult = ({ confirmedOrders }: {
+    confirmedOrders: OrderModelProps[]
 }) => {
 
-    const [data, setData] = useState(orders)
+    const [data, setData] = useState(confirmedOrders)
+    const { flash } = usePage<{ flash: FlashDataProps }>().props
     const [isLoading, setIsLoading] = useState(false)
-    const { auth } = usePage<{
-        auth: { user: UserModelProps }
-    }>().props
+    const toastRef = useRef<{ publish: () => void }>(null)
 
     const refreshTable = () => {
         setIsLoading(true)
-        fetch(route('cobain'))
+        window.axios.get(route('fetch.confirmed.orders'))
             .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Http error. (${response.status})`)
+                if (response.statusText === "OK") {
+                    setData(response.data)
+                    setIsLoading(false)
                 }
-                return response.json()
-            })
-            .then((data) => {
-                console.log(data)
-                // setData(data)
-                // setIsLoading(false)
-            })
-            .catch(error => {
-                console.log(error)
+            }).catch(error => {
+                console.log(error.toJSON())
             })
     }
 
@@ -63,11 +54,20 @@ const useInputResult = ({ orders }: {
         )
     }
 
+    useEffect(() => {
+        if (flash.toastMsg) {
+            toastRef.current?.publish()
+        }
+        refreshTable()
+    }, [confirmedOrders])
+
     return ({
         data,
+        flash,
         isLoading,
         refreshTable,
-        renderSubComponent
+        renderSubComponent,
+        toastRef,
     })
 }
 

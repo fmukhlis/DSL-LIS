@@ -2,36 +2,44 @@ import {
     useState,
     forwardRef,
     useImperativeHandle,
-    ComponentPropsWithRef,
 } from "react"
+
+// Radix UI
 import * as PrimitivesToast from '@radix-ui/react-toast'
-import { Cross2Icon } from "@radix-ui/react-icons"
 
-export const Toast = forwardRef<{ publish: () => void }, PrimitivesToast.ToastProps & { icon?: JSX.Element }>(
+// Internal
+import { ToastProps } from "@/Types"
+
+export const Toast = forwardRef<{ publish: () => void }, ToastProps>(
     ({ title, icon, children, ...props }, forwardedRef) => {
-        const [count, setCount] = useState(0)
 
-        useImperativeHandle(forwardedRef, () => ({
-            publish: () => {
-                setCount(c => c + 1)
-            },
-        }))
+        // const [count, setCount] = useState(1)
+        // useImperativeHandle(forwardedRef, () => ({
+        //     publish: () => {
+        //         setCount(c => c + 1)
+        //     },
+        // }))
+
 
         return (
             <>
-                {Array.from({ length: count }).map((_, index) => (
-                    <PrimitivesToast.Root
-                        defaultOpen
-                        {...props}
-                        key={index}
-                        className="relative bg-teal-50 flex flex-col border-t-[3px] border-teal-700 text-teal-700 shadow-xl rounded p-3"
-                    >
+                {/* Array.from({ length: count }).map((_, index) => ( */}
+                <PrimitivesToast.Root
+                    {...props}
+                    className="relative bg-teal-50 flex flex-col shadow-[0_0_1px_0_,_0_3px_4px] text-teal-700 shadow-gray-400 rounded 
+                    focus:ring-2 focus:ring-offset-2 focus:ring-teal-600 outline-none
+                    data-[state=open]:animate-slideIn data-[state=closed]:animate-hide 
+                    data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] 
+                    data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] 
+                    data-[swipe=end]:animate-swipeOut
+                    "
+                >
+                    <div className="p-3">
                         <PrimitivesToast.Title className="font-bold flex items-center gap-2 mb-2">{icon}{title}</PrimitivesToast.Title>
-
                         <PrimitivesToast.Description>{children}</PrimitivesToast.Description>
-                        <PrimitivesToast.Close className="absolute top-2 right-2 opacity-60 hover:opacity-100 duration-150"><Cross2Icon width={17} height={17} /></PrimitivesToast.Close>
-                    </PrimitivesToast.Root>
-                ))}
+                    </div>
+                </PrimitivesToast.Root>
+                {/* )) */}
             </>
         )
     }

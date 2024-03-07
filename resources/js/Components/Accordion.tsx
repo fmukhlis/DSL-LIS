@@ -15,7 +15,7 @@ export const AccordionItem = forwardRef<HTMLDivElement, PrimitivesAccordion.Acco
                 {...props}
                 ref={forwardedRef}
                 className={`
-                    overflow-hidden 
+                    overflow-hidden focus-within:shadow-[0_0_0_2px_#0d9488] duration-200
                     ${className}
                 `}
             >
@@ -33,18 +33,17 @@ export const AccordionTrigger = forwardRef<HTMLButtonElement, PrimitivesAccordio
                     {...props}
                     ref={forwardedRef}
                     className={`
-                        group flex items-center justify-between outline-none flex-1 font-bold
+                        group flex items-center justify-between outline-none cursor-default flex-1 font-bold
                         ${className}
                     `}
                 >
                     <div className='flex items-center'>
-                        <ThickArrowRightIcon className='duration-300 group-focus:w-6 mr-1 w-0' />
                         {children}
                     </div>
                     <TriangleDownIcon
                         width={17}
                         height={17}
-                        className='group-data-[state=open]:-rotate-180 duration-200'
+                        className='group-data-[state=open]:-rotate-180 duration-300'
                         aria-hidden
                     />
                 </PrimitivesAccordion.Trigger>

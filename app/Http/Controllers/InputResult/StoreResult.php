@@ -4,30 +4,23 @@ namespace App\Http\Controllers\InputResult;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-
 
 class StoreResult extends Controller
 {
-    public function __invoke(\App\Models\Order $order, Request $request): RedirectResponse
+    public function __invoke(\App\Models\Order $order, \App\Http\Requests\StoreResultRequest $request): RedirectResponse
     {
-        $request->validate([
-            'test_id' => 'required|exists:tests,_id',
-            'result' => 'array|min:1',
-            'result.*.value' => 'numeric',
-            'result.*.parameter_id' => 'exists:parameters,_id',
-        ]);
+        $validated = $request->validated();
 
-        $specificResult = $order->results()->where('test_id', $request->test_id)->first();
+        $result = $order->results()->find($validated['resultID']);
 
         // Since Laravel-MongoDB library doesn't support "upsert" operation, 
         // we should specifically reset/clear an existing test result record.
-        $specificResult->parameterValues->each(function ($item, int $key) {
-            $item->delete();
+        $result->parameterValues->each(function (\App\Models\ParameterValue $parameterValue) {
+            $parameterValue->delete();
         });
 
-        $specificResult->parameterValues()->createMany($request->result);
+        $result->parameterValues()->createMany($validated['parameterValues']);
 
-        return back()->with('operationResponse', 'Data saved!');
+        return back()->with('responseMsg', 'Data saved!');
     }
 }

@@ -18,6 +18,6 @@ class DeleteOrder extends Controller
         }));
         $order->delete();
 
-        return back()->with('operationResponse', 'Order with ID: ' . $order->registration_id . ' has been deleted successfully!');
+        return back()->with('toastMsg', 'Order with ID: ' . $order->registration_id . ' has been deleted successfully!');
     }
 }

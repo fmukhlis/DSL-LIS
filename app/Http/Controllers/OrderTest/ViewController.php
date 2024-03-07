@@ -63,7 +63,7 @@ class ViewController extends Controller
     {
         $this->authorize('view', \App\Models\Order::class);
 
-        return Inertia::render('OrderTest/ConfirmOrder', [
+        return Inertia::render('OrderTest/OrderTestDetail', [
             'analysts' => Analyst::all(),
             'order' => $order->load([
                 'doctor',

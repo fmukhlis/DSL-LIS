@@ -1,22 +1,21 @@
-import { FormEvent, useEffect, useState } from "react"
+import { FormEvent, useContext, useEffect, useState } from "react"
 
 // Inertia JS
-import { useForm, usePage } from "@inertiajs/react"
+import { useForm } from "@inertiajs/react"
 
 // Internal
-import { DoctorModelProps, PatientModelProps, RegisteredDoctorProps, RegisteredPatientProps, TestModelProps, UserModelProps } from "@/Types"
+import { DoctorModelProps, RegisteredDoctorProps, RegisteredPatientProps, TestModelProps } from "@/Types"
+import { OrderTestContext } from "../Context/OrderTestContext"
+import { dialogTransition } from "@/Components/Dialog"
 
 // React Select
 import { ActionMeta } from "react-select"
 
 // Faker JS
 import { faker } from "@faker-js/faker"
+import { useSpring } from "@react-spring/web"
 
-const useEditOrderModal = ({ can, defaultData, externalDoctors, processedRegID }: {
-  can: {
-    selectExternalDoctor: boolean
-    viewDetail: boolean
-  },
+const useEditOrderModal = ({ defaultData }: {
   defaultData: {
     note?: string
     tests: TestModelProps[]
@@ -26,11 +25,11 @@ const useEditOrderModal = ({ can, defaultData, externalDoctors, processedRegID }
     externalDoctor?: DoctorModelProps
     payment_method: 'BPJS' | 'Insurance' | 'Self-Payment'
   }
-  externalDoctors: DoctorModelProps[]
-  processedRegID: string[]
 }) => {
 
-  const { data, setData, errors, clearErrors, reset, processing, patch, transform } = useForm<{
+  const orderTestContext = useContext(OrderTestContext)
+
+  const { data, setData, errors, clearErrors, reset, processing, patch } = useForm<{
     note: string
     tests: TestModelProps[]
     is_cito: boolean
@@ -55,8 +54,19 @@ const useEditOrderModal = ({ can, defaultData, externalDoctors, processedRegID }
   const deleteForm = useForm()
 
   const [isExternal, setIsExternal] = useState(false)
-  const [extDrExist, setExtDrExist] = useState(true)
+  const [extDrExist, setExtDrExist] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+
+  const [fade, fadeAPI] = dialogTransition(isOpen)
+  const [spring, springAPI] = useSpring(() => ({
+    from: { opacity: 0.4 }
+  }))
+  const [tab, setTab] = useState(orderTestContext?.categories[0]._id)
+  const handleTabChange = (value: string) => {
+    springAPI.set({ opacity: 0.4 })
+    springAPI.start({ opacity: 1 })
+    setTab(value)
+  }
 
   let typingTimeoutPatient: ReturnType<typeof setTimeout>
   let typingTimeoutDoctor: ReturnType<typeof setTimeout>
@@ -77,7 +87,7 @@ const useEditOrderModal = ({ can, defaultData, externalDoctors, processedRegID }
           const registeredPatients = response.data.filter(
             registeredPatient =>
               // Exclude the current registration ID from processedRegID array
-              !(processedRegID.filter(regID => regID !== defaultData.patient.registration_id)
+              !(orderTestContext?.processedRegID.filter(regID => regID !== defaultData.patient.registration_id)
                 .includes(registeredPatient.registration_id))
           ).map(
             registeredPatient => ({
@@ -117,7 +127,7 @@ const useEditOrderModal = ({ can, defaultData, externalDoctors, processedRegID }
             }))
 
             resolve(
-              can.selectExternalDoctor ? [
+              orderTestContext?.can.selectExternalDoctor ? [
                 {
                   label: 'External doctor...',
                   value: {
@@ -161,7 +171,7 @@ const useEditOrderModal = ({ can, defaultData, externalDoctors, processedRegID }
     setData('doctor', newValue ? newValue.value : null)
   }
 
-  const externalDoctorOptions = externalDoctors.map(externalDoctor => ({
+  const externalDoctorOptions = orderTestContext?.externalDoctors.map(externalDoctor => ({
     value: externalDoctor._id,
     label: externalDoctor.name,
   }))
@@ -186,9 +196,9 @@ const useEditOrderModal = ({ can, defaultData, externalDoctors, processedRegID }
           name: newValue!.value,
         }
       }))
-    } else {
+    } else if (actionMeta.action === "select-option") {
       setExtDrExist(true)
-      const selectedExternalDoctor = externalDoctors.find(doctor => doctor._id === newValue?.value)
+      const selectedExternalDoctor = orderTestContext?.externalDoctors.find(doctor => doctor._id === newValue?.value)
       setData(data => ({
         ...data,
         externalDoctor: {
@@ -197,6 +207,17 @@ const useEditOrderModal = ({ can, defaultData, externalDoctors, processedRegID }
           name: selectedExternalDoctor ? selectedExternalDoctor.name : '',
         }
       }))
+    } else {
+      setExtDrExist(false)
+      setData(data => ({
+        ...data,
+        externalDoctor: {
+          _id: '',
+          institution: '',
+          name: '',
+        }
+      }))
+
     }
   }
 
@@ -252,9 +273,13 @@ const useEditOrderModal = ({ can, defaultData, externalDoctors, processedRegID }
 
   useEffect(() => {
     if (!isOpen) {
+      setExtDrExist(false)
       reset()
       clearErrors()
+    } else {
+      springAPI.start({ opacity: 1 })
     }
+    fadeAPI.start()
   }, [isOpen])
 
   useEffect(() => {
@@ -262,6 +287,7 @@ const useEditOrderModal = ({ can, defaultData, externalDoctors, processedRegID }
       setIsExternal(true)
     } else {
       setIsExternal(false)
+      setExtDrExist(false)
       setData('externalDoctor', {
         _id: '',
         institution: '',
@@ -271,15 +297,18 @@ const useEditOrderModal = ({ can, defaultData, externalDoctors, processedRegID }
   }, [data.doctor])
 
   return ({
+    categories: orderTestContext?.categories,
     data,
     deleteOnProcess: deleteForm.processing,
     deleteOrder,
     errors,
     extDrExist,
     externalDoctorOptions,
+    fade,
     handleCITOCheckboxInput,
     handleInstitutionTextInput,
     handleNoteTextInput,
+    handleTabChange,
     handleTestsCheckboxInput,
     isExternal,
     isOpen,
@@ -290,7 +319,9 @@ const useEditOrderModal = ({ can, defaultData, externalDoctors, processedRegID }
     selectExternalDoctor,
     selectPatient,
     setIsOpen,
-    submitForm
+    spring,
+    submitForm,
+    tab,
   })
 }
 

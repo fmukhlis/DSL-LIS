@@ -1,18 +1,20 @@
-
 // Internal
 import { OrderModelProps } from "@/Types"
-import usePatientInformation from "../Hooks/usePatientInformation"
+import usePatientInformation from "../Pages/ValidateResult/Hooks/usePatientInformation"
 
 // Radix UI
-import { DoubleArrowDownIcon, DoubleArrowUpIcon } from "@radix-ui/react-icons"
+import { DoubleArrowDownIcon } from "@radix-ui/react-icons"
 
-const PatientInformation = ({ order }: { order: OrderModelProps }) => {
+// React Spring
+import { animated } from "@react-spring/web"
 
-    const { isShow, toggleIsShow } = usePatientInformation()
+const PatientInformation = ({ order, ...props }: { order: OrderModelProps }) => {
+
+    const { fade, expand, isShow, toggleIsShow } = usePatientInformation()
 
     return (
-        <div className="py-3 max-w-6xl w-full mx-auto bg-teal-200 text-teal-800 rounded relative">
-            <div className={`${!isShow && "max-h-[5.3rem]"} overflow-hidden`}>
+        <div {...props} className="py-3 max-w-6xl w-full mx-auto bg-teal-100 text-teal-800 rounded relative">
+            <animated.div style={expand} className={`overflow-hidden`}>
                 <div className="flex flex-col">
                     <h2 className="px-5 font-bold border-b-2 border-teal-600 pb-2.5 mb-2">Patient Details</h2>
                 </div>
@@ -20,7 +22,7 @@ const PatientInformation = ({ order }: { order: OrderModelProps }) => {
                     <div className="flex flex-col gap-1.5 w-1/5">
                         <div className="flex flex-col">
                             <span className="font-bold">Name: </span>
-                            <span className="text-teal-700">{order.patient!.name}</span>
+                            <span className="text-teal-700">{order.patient?.name}</span>
                         </div>
 
                         <div className="flex flex-col">
@@ -76,34 +78,37 @@ const PatientInformation = ({ order }: { order: OrderModelProps }) => {
 
                         <div className="flex flex-col">
                             <span className="font-bold">Contact: </span>
-                            {
-                                order.patient!.contacts.map(contact => (
-                                    <span
-                                        key={contact._id}
-                                        className="text-teal-700"
-                                    >
-                                        {contact.contact} ({contact.type})
-                                    </span>
-                                ))
-                            }
+                            {order.patient?.contacts.map(contact => (
+                                <span
+                                    key={contact._id}
+                                    className="text-teal-700"
+                                >
+                                    {contact.contact} ({contact.type})
+                                </span>
+                            ))}
                         </div>
                     </div>
                 </div>
-            </div>
+            </animated.div>
 
-            {!isShow &&
-                <div className="w-full h-1/3 absolute bottom-0 bg-gradient-to-b from-transparent to-teal-200"></div>
-            }
-            <button
-                className="left-1/2 -translate-x-1/2 bg-teal-100 shadow px-5 py-1 rounded-sm absolute -bottom-3 animate-bounce"
-                onClick={toggleIsShow}
-            >
-                {
-                    !isShow
-                        ? <DoubleArrowDownIcon />
-                        : <DoubleArrowUpIcon />
-                }
-            </button>
+            {fade((style, item) => {
+                return (
+                    !item &&
+                    <animated.div
+                        style={style}
+                        className="w-full h-1/3 absolute bottom-0 bg-gradient-to-b from-transparent to-teal-100"
+                    ></animated.div>
+                )
+            })}
+            <div className="w-full absolute top-3 overflow-visible flex justify-end px-2">
+                <button
+                    className="bg-teal-50 py-1 shadow-lg px-6 rounded-sm duration-75
+                    focus:ring-teal-400 focus:ring-2 focus:outline-none hover:bg-teal-200"
+                    onClick={toggleIsShow}
+                >
+                    <DoubleArrowDownIcon className={"duration-200 " + (isShow && "-scale-y-100")} />
+                </button>
+            </div>
         </div>
     )
 }

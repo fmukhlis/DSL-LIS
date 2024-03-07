@@ -3,23 +3,18 @@
 namespace App\Http\Controllers\OrderTest;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ManageAnalystRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class ManageAnalyst extends Controller
 {
-    public function confirm(\App\Models\Order $order, Request $request): RedirectResponse
+    public function confirm(\App\Models\Order $order, ManageAnalystRequest $request): RedirectResponse
     {
-        $this->authorize('view', \App\Models\Order::class);
+        $validated = $request->validated();
 
-        $request->validate([
-            'analyst' => 'required',
-            'analyst.value' => 'exists:analysts,_id',
-            'pin' => 'required|digits:6',
-        ]);
-
-        $analyst = \App\Models\Analyst::find($request->analyst['value']);
+        $analyst = \App\Models\Analyst::find($validated['analyst']['value']);
 
         if (Hash::check($request->pin, $analyst->pin)) {
             $order->confirmed_at = now();
@@ -30,13 +25,23 @@ class ManageAnalyst extends Controller
         }
 
         return redirect()->route('order.test')->with(
-            'operationResponse',
+            'toastMsg',
             'The order with ID: ' . $order->registration_id . ' has been confirmed by ' . $analyst->name
         );
     }
 
-    public function change(\App\Models\Order $order, Request $request): RedirectResponse
+    public function change(\App\Models\Order $order, ManageAnalystRequest $request): RedirectResponse
     {
+        $validated = $request->validated();
+
+        $analyst = \App\Models\Analyst::find($validated['analyst']['value']);
+
+        if (Hash::check($request->pin, $analyst->pin)) {
+            $order->confirmed_at = now();
+            $analyst->orders()->save($order);
+        } else {
+            return back()->withErrors(['pin' => "PIN not match!"]);
+        }
 
         return back();
     }

@@ -11,8 +11,9 @@ export default forwardRef<HTMLAnchorElement, InertiaLinkProps>(
                 ref={forwardedRef}
                 className={`inline-flex items-center justify-center
                 bg-teal-500 border-teal-500 text-white
+                data-[disabled=true]:pointer-events-none data-[disabled=true]:select-none data-[disabled=true]:opacity-50
                 hover:bg-teal-400 focus:bg-teal-400 active:bg-teal-600
-                focus:ring-teal-400 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-25
+                focus:ring-teal-400 focus:outline-none focus:ring-2 focus:ring-offset-2
                 border-2 transition ease-in-out duration-150
                 font-semibold uppercase tracking-widest text-xs
                 ${className}`
